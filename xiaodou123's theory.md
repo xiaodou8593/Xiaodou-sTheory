@@ -192,10 +192,115 @@ facing ^ ^ ^1对执行朝向进行“规整化”。facing的作用是为
 令facing ^ ^ ^-1对执行朝向进行反转。</pre>
 </details>
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这是一个利用执行方式实现命令输入的例子：`setblock ~ ~5 ~ stone` 该命令接收执行坐标作为输入，在执行坐标上方5格输出一个石头。（为了简化叙述，忽略了维度、区块加载、高度上限、原有方块）
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总结：执行方式是一种天然的、方便、良好的输入。它具有局部性、继承性、可直接访问的优良特性。而执行方式同时具有很大的局限性：
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·单向传递，无法作为命令的输出；
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·无法直接对执行方式进行复杂的数值运算；
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·无法满足具有复杂结构数据的表示需求；
+
+由于以上三点局限性，我们有必要维护更加高级的命令输入输出形式。
 
 #### 人工维护的输入输出
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;本节介绍人工维护的输入输出。人工维护的输入输出，通常有以下几种形式：记分板、storage、实体。我们在本节对这三种形式的维护方法进行一一讲解。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·记分板表示的输入输出：
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;记分板经常被用来表示有限范围的数值(包括整数和小数)，它的表示范围是-2^31~2^31-1(即-2147483648到2147483647)。对于普通整数，直接取原数值即可。对于普通小数，我们需要事先规定好一个倍率(有时也称精度)。例如1k倍率的小数，那么2333表示的实际数值是2.333。对于较大的整数或精度较高的小数，我们就需要多个记分板分数来表示一个数值。本书中最常用的记分板输入输出是两个临时对象：inp(input的缩写)和res(result)的缩写，它们的记分板表示形式是<inp,int>和<res,int>。本书最常用的普通小数倍率是1k。
+
+例：
+
+```
+scoreboard players set inp int 64
+function math:sqrt/_3sqrt
+scoreboard players get res int
+```
+
+这里把输入inp置为了64，调用了数学库中的3位精度开根号函数，获得输出res是8000(表示数值为8.000)。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·storage表示的输入输出：
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;storage是一种自定义nbt的储存介质。自定义nbt具有高度的自由性，经常被用于表示各种具有复杂结构的数据，甚至是被用于表示一个对象。本书中最常用的两个storage分别是math:class与math:io。math:class的特点是只用于储存静态的数据模板，它们在初始化阶段被设置，在运行阶段只读(与整数的int定义异曲同工)。math:io与math:class相反，它只用于储存运行过程中产生的各类临时数据和输入输出。对于输入输出，我们使用math:io中的input和result两个临时对象进行表示。下面三个例子可以很好地解释class与io的使用方式：
+
+例1：
+
+```
+data modify storage math:io input set from math:class vehicles[{id:"plane"}]
+function vehicles:_new
+```
+
+这段命令将载具类中飞机的数据模板放入input，然后调用了载具的构造函数，实例化了一个飞机对象。
+
+例2：
+
+```
+data modify storage math:io input set from storage math:class vehicles[{id:"garbage_truck"}]
+data modify storage math:io input merge from storage math:class vehicles[{id:"sports_car"}]
+function vehicles:_new
+```
+
+这段命令构造了一个临时类：载具是跑车，但同时继承了垃圾车的部分属性，然后运行了载具的构造函数，将其实例化为对象。
+
+例3：
+
+```
+data modify storage math:io input set from storage math:class vehicles[{id:"sports_car"}]
+data modify storage math:io input.v_max set value 12.5d
+function vehicles:_new
+```
+
+这段命令实例化了一辆最大速度是12.5的跑车。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·实体表示的输入输出：
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;实体是命令中最常用的对象，它具有功能性与逻辑性。在功能性的一面：原版生物AI可以为我们所用，盔甲架/物品展示框可以为我们提供模型显示服务，载具类实体可以提供座椅，抛射物可以制作发射效果......在逻辑性的一面：实体可以直接通过as、at等execute子命令与执行方式沟通，实现围绕实体的一系列逻辑。可以说传统命令的实质是面向实体编程。在命令中，我们最常使用的实体指代方法是使用tag。本书中对输入输出实体的指代tag分别是input和result。每次将实体置入输入输出池之前，我们首先应使用tag @e remove input/result进行输入输出池的释放。这里使用@e而不是@e[tag=]，是为了避免后者画蛇添足性的性能损坏：后者会把检查tag是否存在的操作在有tag实体上进行两次。以下几个例子展示实体输入输出的用法：
+
+例1：
+
+```
+#entity:_new
+tag @e remove result
+summon marker 0 11 0 {Tags:["result","entity"]}
+#else operations
+```
+
+该entity的构造函数会返回一个marker实体。当其他开发者调用entity:_new函数时，便可以使用@e[tag=result,limit=1]对返回实体进行唯一确定的指代。
+
+例2：
+
+```
+#entity:test
+function entity:_new
+tag @e remove input
+tag @e[tag=result,limit=1] add input
+tag @e[distance=..10] add input
+function entity:_kill_each_other
+```
+
+该entity的测试函数首先调用了entity的构造函数，生成了一个新的marker实体，然后利用result标签对其进行指代，置入输入池，同时将以执行位置为球心，半径10格的球体范围的全部实体置入了输入池，然后调用entity:_kill_each_other函数，使它们自相残杀。
+
+<details>
+<summary>对0 0附近区块以及坐标0 11 0的说明</summary>
+<pre>
+本书使用命令forceload add -1 -1 1 1将0 0附近四个区块
+全部加载。0 11 0是本书中较为常用的坐标：临时方块在0 11 
+0被放置，很多实体在0 11 0被生成。在0 11 0生成实体有一点
+好处：我们假设玩家实际游戏区域距离0 11 0较远，那么实体
+渲染的第一帧对玩家不可见。例如在玩家面前发射一支箭，如
+果直接在玩家面前生成箭，会发现箭的朝向一开始并不正确，
+并且有一个偏转动画。这是由于实体第一帧的渲染由summon
+决定，后续命令只能使实体从初始状态经过动画过渡到后续状态
+，而0 11 0使得第一帧不可见就可以避免这个问题。另外需要注
+意的是，使用0 11 0生成箭这类抛射物实体，然后传送到玩家面
+前时，不能使用tp，因为tp把Motion[1]归零，使用data命令传
+送就可以避免这个问题了。</pre>
+</details>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总结：人工维护的输入输出是更加高级的输入输出形式，能够自由地表达任意数量任意结构的数值和数据，甚至是对象。但本节所讲的人工维护的输入输出有最大的一点局限性：它们都是全局的，不具备执行方式那样的局部性。那么，有没有什么方法克服这段局限性，实现具有局部性的人工数据形式呢？我们将在<命令函数的组织方式>中的<顺序>和<广义递归>部分进行讲解。
+
 #### 输入输出部分的总结
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在本章节的第二部分，我们重点介绍了两类自定义数据的输入输出形式
 
 ### 命令处理
 
