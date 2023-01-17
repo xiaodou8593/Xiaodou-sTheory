@@ -60,7 +60,7 @@
 
 ### 命令也是一种函数
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;命令也是一种函数。为什么这么说呢？如果我们
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;命令也是一种函数。为什么这么说呢？如果我们把整个mc世界
 
 ## 命令函数的基本要素
 
