@@ -155,7 +155,42 @@ f2-->B((res))
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·若源头为命令方块，那么执行者是命令方块，执行维度是命令方块所在维度，执行坐标是命令方块的中心点坐标，执行朝向是水平正南(z+方向)，高度h是0。
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·若源头为tick/load函数，那么执行者是服务端，执行维度是主世界，执行坐标是世界出生点，执行朝向是正南，高度h是0。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·此外还有一些不常用的执行源头(成书、tellraw、告示牌、schedule、进度等)，这里不再列举。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.根据函数的调用过程中的execute子命令分析执行方式状态转移。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;执行者可能被as修改为参数指定实体。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;执行维度可能被in修改为参数指定维度，可能被at修改为参数指定实体所在维度。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;执行坐标可能被at修改为参数指定实体坐标，可能被positioned as修改为参数指定实体坐标，可能被positioned修改为参数指定坐标，可能被align修改为原执行坐标向下取整后坐标，可能被in进行对应维度的坐标缩放。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;执行朝向可能被rotated修改为参数指定朝向，可能被rotated as修改为参数指定实体朝向，可能被facing修改为从基准点看向参数指定坐标的朝向，可能被facing entity修改为从基准点看向参数指定锚点的朝向。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;高度h可能被anchored eyes修改为执行者实体的身高(eyes到feet的距离)，可能被anchored feet修改为0，可能被positioned \<pos> (而at和positioned as无此效果)修改为0。
+
+<details>
+<summary>对rotated与facing以及tp细节的说明</summary>
+<pre>
+读者可能遇到过这样一个问题：让一个实体看向反方向。如果
+使用命令execute as entity at @s run tp @s ~ ~ ~ ~
+ ~180.0或者命令execute as entity at @s rotated ~ 
+~180.0 run tp @s ~ ~ ~ ~ ~会发现实体并没有看向反方向
+，而是看向了竖直向上或向下方向。经过我们的研究发现，问
+题出现在tp而不是rotated。tp有这样一个机制：当它旋转实体
+的rot1角的时候，如果我们给tp传入的目标角度超过了-90度到
+90度的范围，那么实体朝向在旋转过程中会在竖直方向被卡住。
+例如：实体当前朝向是89.0f，目标角度是91.0f，实体朝向最终
+会变成90.0f，也就是朝向竖直向下。如果是-89.0f旋转到-91.0f
+，朝向竖直向上同理。对于这个现象，我们的解决方法是利用
+facing ^ ^ ^1对执行朝向进行“规整化”。facing的作用是为
+执行朝向重新赋值，它是标准的-90.0f到90.0f的rot1角度。例如rotated把执行朝向累加到(0.0f,91.0f)后，facing ^ ^ ^1会把执
+行朝向规整化为(-180.0f,89.0f)，二者是同一个方向，但后者就
+可以保证tp的正常运行了。类似的道理，我们可以直接使用子命
+令facing ^ ^ ^-1对执行朝向进行反转。</pre>
+</details>
 
 
 #### 人工维护的输入输出
