@@ -430,9 +430,13 @@ state2-->o2-->E((form4))
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·临时分数
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·临时nbt
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·临时标签
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·临时nbt
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·临时物品
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·临时方块
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·临时实体
 
@@ -440,8 +444,47 @@ state2-->o2-->E((form4))
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·广义临时实体
 
-
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·广义临时对象
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;临时分数：用记分板分数表示的数值类型临时对象。本书中，我们使用含有子字符串"temp"的虚拟玩家在记分板int上的分数来表示一个临时分数。例如：<tempx,int>,<templ,int>,<temp_id,int>,<temp,int>。就像输入输出形式那样，小数数值的临时分数需要事先规定好一个倍率例如1k。由此可以看出，**临时对象类型的定义不仅包含mc中存在的表示形式，还包含人为的规定，相同表示形式但人为规定不同的形式不能认为是同一类型。**
+
+例1：将输入的整数类型nbt转化为临时对象后进行+1处理返还
+
+```
+execute store result score temp int run data get storage math:io input
+scoreboard players add temp int 1
+execute store result storage math:io input int 1 run scoreboard players get temp int 1
+```
+
+由于**记分板运算命令的返回值是运算结果**，我们通常做以下简化处理
+
+```
+execute store result score temp int run data get storage math:io input
+execute store result storage math:io input int 1 run scoreboard players add temp int 1
+```
+
+在这个例子中，临时分数充分展现了它易于运算的特性。但是，我们是不是非借助临时分数进行运算不可呢？其实不然，看下面的例子：
+
+```
+execute store result storage math:io input int -1 run data get storage math:io input -1.0001
+```
+
+这条命令巧妙地利用倍率与向下取整的性质，直接在原nbt上实现了一定范围内的加1运算，并没有借助临时分数。不过，目前没有证据显示这样做对性能有优化作用，所以在命令的可读性方面考虑，我们不推荐这种写法。在实际开发中，利用倍率实现乘法运算是更为正常的做法：
+
+
+例2：绕开临时分数，直接对浮点数进行乘10运算
+
+```
+execute store result storage math:io input double 0.001 run data get storage math:io input 10000
+```
+
+另外，请读者思考：以下命令是否可行？命令的返回值是一种什么数据？
+
+```
+execute store result storage math:io input 10 run data get storage math:io input
+```
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;临时nbt：
 
 #### 形式转换网
 
