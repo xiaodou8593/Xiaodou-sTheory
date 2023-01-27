@@ -478,13 +478,13 @@ execute store result storage math:io input int -1 run data get storage math:io i
 execute store result storage math:io input double 0.001 run data get storage math:io input 10000
 ```
 
-另外，请读者思考：以下命令是否可行？命令的返回值是一种什么数据？
+另外，请读者思考：把浮点数乘10，用以下命令是否可行？命令的返回值是一种什么类型的数据？
 
 ```
 execute store result storage math:io input 10 run data get storage math:io input
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;临时nbt：
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;临时nbt：用storage表示的临时对象，其数据通常具有复杂的层次或顺序结构。本书中，我们使用在storage math:io中带有子字符串"temp"的标签表示一个临时nbt。例如：storage math:io temp_cmp，storage math:io temp_list等。
 
 #### 形式转换网
 
