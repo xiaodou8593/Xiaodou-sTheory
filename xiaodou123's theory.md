@@ -471,7 +471,6 @@ execute store result storage math:io input int -1 run data get storage math:io i
 
 这条命令巧妙地利用倍率与向下取整的性质，直接在原nbt上实现了一定范围内的加1运算，并没有借助临时分数。不过，目前没有证据显示这样做对性能有优化作用，所以在命令的可读性方面考虑，我们不推荐这种写法。在实际开发中，利用倍率实现乘法运算是更为正常的做法：
 
-
 例2：绕开临时分数，直接对浮点数进行乘10运算
 
 ```
@@ -484,7 +483,17 @@ execute store result storage math:io input double 0.001 run data get storage mat
 execute store result storage math:io input 10 run data get storage math:io input
 ```
 
+利用临时分数进行数值运算的理论，我们将在<数值运算基础>这一章进行深入讲解。
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;临时nbt：用storage表示的临时对象，其数据通常具有复杂的层次或顺序结构。本书中，我们使用在storage math:io中带有子字符串"temp"的标签表示一个临时nbt。例如：storage math:io temp_cmp，storage math:io temp_list等。
+
+例：交换输入的两项nbt
+
+```
+data modify storage math:io temp set from storage math:io input[0]
+data modify storage math:io input[0] set from storage math:io input[1]
+data modify storage math:io input[1] set from storage math:io temp
+```
 
 #### 形式转换网
 
