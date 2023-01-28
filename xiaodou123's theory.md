@@ -432,13 +432,11 @@ state2-->o2-->E((form4))
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·临时nbt
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·临时标签
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·临时实体
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·临时物品
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·临时方块
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·临时实体
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·世界实体
 
@@ -485,7 +483,7 @@ execute store result storage math:io input 10 run data get storage math:io input
 
 利用临时分数进行数值运算的理论，我们将在<数值运算基础>这一章进行深入讲解。
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;临时nbt：用storage表示的临时对象，其数据通常具有复杂的层次或顺序结构。本书中，我们使用在storage math:io中带有子字符串"temp"的标签表示一个临时nbt。例如：storage math:io temp_cmp，storage math:io temp_list等。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;临时nbt：用storage表示的临时对象，其数据通常具有复杂的层次或顺序结构。本书中，我们使用在storage math:io中带有子字符串"temp"的标签表示一个临时nbt，例如：storage math:io temp_cmp，storage math:io temp_list等。
 
 例：交换输入的两项nbt
 
@@ -494,6 +492,39 @@ data modify storage math:io temp set from storage math:io input[0]
 data modify storage math:io input[0] set from storage math:io input[1]
 data modify storage math:io input[1] set from storage math:io temp
 ```
+
+利用临时nbt进行数据处理的理论，我们将在<数据处理基础>这一章进行深入讲解。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;临时实体：使用tag对实体进行指代，表示一个实体类型的临时对象。本书中，我们使用带有子字符串"tmp"的标签指代一个临时实体，例如@e[tag=tmp,limit=1]。注意本书中对“临时”的缩写习惯，使用了两种不同的表示：temp、tmp，而它们的用法有所不同。当被指代的是一个确切的值(例如记分板分数、nbt值)，强调值的可重复属性时(例如不同的变量可能具有相同的值是2)，我们使用temp进行指代；当被指代的是一个对象(通常是一个实体)，强调其独一无二的属性时(例如实体的位置和朝向几乎不可能相同)，我们使用tmp进行指代。这样使用两种不相同的指代方法可以增加不同类型元素的区分度，方便辨别，增加命令的可读性(至少不会一眼望去全是temp了)。
+
+例1：召唤一只分数level为5的村民
+
+```
+summon villager ~ ~ ~
+scoreboard players set @e[type=villager,limit=1,sort=nearest] level 5
+```
+
+在不了解tag指代的情况下，我们可能就会像上面这样做：召唤一只村民，利用选择器参数选择最近的那只村民进行分数赋值。抛开偌长的选择器有失优雅性不谈，这种方法的漏洞也是非常明显的：不同村民位置重合时有误选的风险。不过，利用tag指代进行命令处理，我们可以这样做：
+
+```
+summon villager ~ ~ ~ {Tags:["tmp"]}
+scoreboard players set @e[tag=tmp,limit=1] level 5
+tag @e remove tmp
+```
+
+就像人工维护输入输出的input和result标签，规定使用前必须移除，我们对临时tmp标签也进行了一种维护：规定使用后tmp必须移除。这样便可以保证，下次使用tmp标签时，世界上不存在其它的tmp标签实体(这是命令处理顺序的单线程导致的)，@e[tag=tmp,limit=1]也就准确地指代了上文的实体，不会出现误选风险。或许读者已经注意到了，前三项基本的临时对象与<人工维护的输入输出>中讲到的三种常用输入输出形式十分相似，有的甚至只有命名上的区别。是的，输入输出形式本质上就是临时对象的一种，它们就是来自"高层"的临时对象。关于输入输出与临时对象的关系，函数层级的概念，以及前文提到的“单线程”一事，我们将在本章<命令函数的组织方式>中的顺序部分进行详细讲解。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;临时物品：物品形式的临时对象。在对物品进行处理时，我们便需要引入临时物品。这里，我们使用0 0 0坐标的箱子的0号栏位存放临时物品，使用block 0 0 0 container.0或block 0 0 0 Items[0]即可指代临时物品。
+
+例：把玩家手持物品数量修改为64个
+
+```
+item replace block 0 0 0 container.0 from entity @s weapon.mainhand
+data modify block 0 0 0 Items[0].Count set value 64b
+item replace entity @s weapon.mainhand from block 0 0 0 container.0
+```
+
+此外，利用物品修饰器也是一种处理物品的方法，可以绕开临时物品。不过由于临时物品的操作更加灵活，这里不再介绍物品修饰器法。
 
 #### 形式转换网
 
