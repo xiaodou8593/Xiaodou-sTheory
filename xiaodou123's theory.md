@@ -300,8 +300,11 @@ function entity:_kill_each_other
 ，而0 11 0使得第一帧不可见就可以避免这个问题。另外需要注
 意的是，使用0 11 0生成箭这类抛射物实体，然后传送到玩家面
 前时，不能使用tp，因为tp把Motion[1]归零，使用data命令传
-送就可以避免这个问题了。</pre>
+送就可以避免这个问题了。另外，为什么y坐标设为11？是笔者
+习惯所致，大概是两个0两个1敲起来比较爽吧。</pre>
 </details>
+
+.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总结：人工维护的输入输出是更加高级的输入输出形式，能够自由地表达任意数量任意结构的数值和数据，甚至是对象。但本节所讲的人工维护的输入输出有最大的一点局限性：它们都是全局的，不具备执行方式那样的局部性。那么，有没有什么方法克服这段局限性，实现具有局部性的人工数据形式呢？我们将在<命令函数的组织方式>中的<顺序>和<广义递归>部分进行讲解。
 
@@ -525,6 +528,106 @@ item replace entity @s weapon.mainhand from block 0 0 0 container.0
 ```
 
 此外，利用物品修饰器也是一种处理物品的方法，可以绕开临时物品。不过由于临时物品的操作更加灵活，这里不再介绍物品修饰器法。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;临时方块：方块形式的临时对象。在对方块进行处理时，我们需要引入临时方块，另外在对文本进行处理时，我们还需要引入一种特殊的临时方块：告示牌。本书使用0 11 0坐标放置所有的临时方块。为了避免此前的临时方块与当前临时方块id相同导致setblock失败，我们规定使用0 11 0放置临时方块之前首先应在0 11 0放置空气。
+
+例1：告示牌解析分数文本，输出到执行者实体的CustomName
+
+```
+setblock 0 11 0 air
+setblock 0 11 0 oak_sign{Text1:'[{"text":"Entity_"},{"score":{"name":"inp","objective":"int"}}]'}
+data modify entity @s CustomName set from block 0 11 0
+```
+
+当我们输入一个僵尸，输入分数inp int为303，可以发现僵尸的名字变为Entity_303。
+
+<details>
+<summary>对告示牌作用的说明</summary>
+<pre>
+告示牌是解析JSON文本的常用手段。JSON文本除了text
+之外的其它组件，有很多是需要解析的，例如score、nbt
+selector。许多JSON文本显示位置无法解析这类组件，例
+如：CustomName、display.Name、display.Lore，这时
+我们便需要利用告示牌的解析作用，把解析完成的JSON文
+本输出到所需位置。除了告示牌，也可以用战利品表的手段
+进行JSON文本解析，这里不再介绍。</pre>
+</details>
+
+.
+例2：输入两个坐标，把坐标0位置的方块输出到坐标1位置。
+
+```
+summon marker 0 11 0 {Tags:["tmp"]}
+data modify entity @e[tag=tmp,limit=1] Pos set from storage math:io input.pos0
+```
+
+我们首先生成一个临时实体用于坐标访问逻辑，把它的坐标设置为坐标0。
+
+```
+setblock 0 11 0 air
+execute at @e[tag=tmp,limit=1] run clone ~ ~ ~ ~ ~ ~ 0 11 0
+```
+
+然后利用clone指令把坐标0位置的方块变为0 11 0临时方块。
+
+```
+data modify entity @e[tag=tmp,limit=1] Pos set from storage math:io input.pos1
+execute at @e[tag=tmp,limit=1] run clone 0 11 0 0 11 0 ~ ~ ~
+kill @e[tag=tmp]
+```
+
+然后我们把临时实体的坐标设置为pos1，用于访问坐标1，把0 11 0临时方块复制到坐标1。最后为了维护以后的临时实体形式的唯一指代性，把当前临时实体清除掉。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;世界实体：用于提供坐标访问服务的永驻临时实体。在上一个例子中，我们使用了临时实体进行坐标访问，生成后清除。但是在坐标访问次数非常大的情况下，每次坐标访问都需要summon然后kill一个临时实体，会对性能造成很大的拖累，这是十分不划算的。因此，我们需要引入一个永驻的世界实体，直接使用它进行坐标访问，而无需summon/kill。本书中，我们使用@e[tag=math_marker,limit=1]来指代世界实体。以下为世界实体的维护命令：
+
+```
+#math_marker
+kill @e[tag=math_marker]
+summon math_marker 0 11 0 {Tags:["math_marker"],UUID:[I;0,0,0,0]}
+#_init
+function #math_marker
+#tick
+execute store result score temp int if entity @e[tag=math_marker]
+execute unless score temp int matches 1 run function #math_marker
+```
+
+这里之所以在tick中进行math_marker数量的检查，是因为在运行过程中math_marker有进入未加载区块的风险，这时可以在tick中进行自动补充。另外，math_marker的UUID设置为固定值，对性能追求极致的开发者也可以使用UUID直接指代世界实体，节省选择器检索带来的性能浪费。不过，为了可读性考虑，本书还是使用math_marker标签进行指代，在需要节省选择器开销时尽量使math_marker变为执行者实体，使用@s对世界实体进行指代。
+
+有了世界实体后，前面例子中的方块复制函数便可以优化了：
+
+```
+#block_trans 传入math_marker为执行者
+data modify entity @s Pos set from storage math:io input.pos0
+execute at @s run clone ~ ~ ~ ~ ~ ~ 0 11 0
+data modify entity @s Pos set from storage math:io input.pos1
+execute at @s run clone 0 11 0 0 11 0 ~ ~ ~
+```
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;广义临时实体：多个临时实体，以及全世界全部已有实体组成的整体形式。当命令处理多项数据时，即使是世界上已经存在的与当前处理任务无关的实体，也可以被临时用于记录数据，节省过多的临时实体生成开销。假设当前任务所需临时实体数量为<n,int>，我们使用以下命令生成数量为n的广义临时实体(限定为marker类型)：
+
+```
+#process
+execute store result score loop int run tag @e[type=marker] add tmp
+execute if score loop int < n int run function #loop0
+execute if score loop int > n int run function #loop1
+#operations with @e[tag=tmp]...
+kill @e[tag=tmp_kill]
+tag @e remove tmp
+
+#loop0
+summon marker 0 11 0 {Tags:["tmp","tmp_kill"]}
+scoreboard players add loop int 1
+execute if score loop int < n int run function #loop0
+
+#loop1
+tag @e[tag=tmp,limit=1] remove tmp
+scoreboard players remove loop int 1
+execute if score loop int > n int run function #loop1
+```
+
+这里的#loop0和#loop1函数调用了自己，这种技巧我们称之为递归。这种递归我们将在本章<命令函数的组织方式>中<递归>一节中<尾递归>的部分进行讲解。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;广义临时对象：任意多个临时对象组合而成的临时对象。一组临时对象可以通过人为规定的约束，组合成新的临时对象。例如：三个临时分数<tempx,int>,<tempy,int>,<tempz,int>可以组合为临时坐标这种新的临时对象。再例如：如果我们规定<particle,int>是表示粒子类型的临时对象，临时坐标与<particle,int>的组合又可表示临时粒子这种广义临时对象。
 
 #### 形式转换网
 
