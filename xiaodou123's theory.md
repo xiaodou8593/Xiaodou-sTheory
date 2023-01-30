@@ -629,6 +629,103 @@ execute if score loop int > n int run function #loop1
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;广义临时对象：任意多个临时对象组合而成的临时对象。一组临时对象可以通过人为规定的约束，组合成新的临时对象。例如：三个临时分数<tempx,int>,<tempy,int>,<tempz,int>可以组合为临时坐标这种新的临时对象。再例如：如果我们规定<particle,int>是表示粒子类型的临时对象，临时坐标与<particle,int>的组合又可表示临时粒子这种广义临时对象。
 
+临时对象的关键属性与属性扩展：
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果一组属性刚好能够完全确定一个临时对象，少了不行，多了不必，那么这一组属性我们称之为临时对象的关键属性。那么理论上，我们把关键属性作为临时对象的表示，就已经获得了临时对象的全部信息，足够进行任何运算处理。例如空间中使用三个坐标<3vec_x,int>,<3vec_y,int>,<3vec_z,int>足够确定一个三维向量。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当我们使用关键属性表示临时对象，进行各种各样的运算时，偶尔会发现很多重复出现的非关键属性。例如对三维向量的计算中，我们可能经常在计算过程中使用到它的方向角属性<3vec_rot0,int>,<3vec_rot1,int>和长度属性<3vec_l,int>。由关键属性计算非关键属性的运算被重复执行，造成了额外的开销。因此，我们需要引入临时对象中属性扩展的概念。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;扩展函数：接收以关键属性表示的临时对象作为输入，计算临时对象的非关键属性作为扩展属性，输出完整的临时对象。限制函数：只能接收完整的临时对象作为输入，进行相应处理，得到预期的输出；对于不完整的临时对象输入，输出不定。属性扩展：在进行所需运算前，首先调用扩展函数处理临时对象，再调用限制函数进行相应运算，以省去重复运算，达到节省开销的目的。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;此外，关键属性的选取并不是唯一的。还是以三维向量为例，如果我们以直角坐标系的方式来表示一个三维向量，那么我们可以把属性<3vec_x,int>,<3vec_y,int>,<3vec_z,int>作为三维向量的关键属性，编写三维向量的方向角与长度扩展函数。如果我们以球坐标系的方式来表示一个三维向量，那么我们可以把属性<3vec_rot0,int>,<3vec_rot1,int>,<3vec_l,int>作为三维向量的关键属性，编写三维向量的直角坐标扩展函数。
+
+这里以三维向量作为例子，展示它的两种扩展函数：
+
+```
+#math:3vec/_ex-xyz
+#获得单位方向向量
+execute store result entity @s Rotation[0] float 0.001 run scoreboard players get 3vec_rot0 int
+execute store result entity @s Rotation[1] float 0.001 run scoreboard players get 3vec_rot1 int
+execute rotated as @s positioned 0.0 0.0 0.0 run tp @s ^ ^ ^1.0
+
+#对单位向量的x分量乘模长得到x坐标
+execute store result score 3vec_x int run data get entity @s Pos[0] 10000
+scoreboard players operation stemp0 int = 3vec_l int
+scoreboard players operation stemp1 int = 3vec_l int
+scoreboard players operation stemp0 int /= 10000 int
+scoreboard players operation stemp1 int %= 10000 int
+scoreboard players operation stemp1 int *= 3vec_x int
+scoreboard players operation stemp1 int /= 10000 int
+scoreboard players operation 3vec_x int *= stemp0 int
+scoreboard players operation 3vec_x int += stemp1 int
+
+#对单位向量的y分量乘模长得到y坐标
+execute store result score 3vec_y int run data get entity @s Pos[1] 10000
+scoreboard players operation stemp0 int = 3vec_l int
+scoreboard players operation stemp1 int = 3vec_l int
+scoreboard players operation stemp0 int /= 10000 int
+scoreboard players operation stemp1 int %= 10000 int
+scoreboard players operation stemp1 int *= 3vec_y int
+scoreboard players operation stemp1 int /= 10000 int
+scoreboard players operation 3vec_y int *= stemp0 int
+scoreboard players operation 3vec_y int += stemp1 int
+
+#对单位向量的z分量乘模长得到z坐标
+execute store result score 3vec_z int run data get entity @s Pos[2] 10000
+scoreboard players operation stemp0 int = 3vec_l int
+scoreboard players operation stemp1 int = 3vec_l int
+scoreboard players operation stemp0 int /= 10000 int
+scoreboard players operation stemp1 int %= 10000 int
+scoreboard players operation stemp1 int *= 3vec_z int
+scoreboard players operation stemp1 int /= 10000 int
+scoreboard players operation 3vec_z int *= stemp0 int
+scoreboard players operation 3vec_z int += stemp1 int
+```
+
+```
+#math:3vec/_ex-rot
+#获得单位方向向量以及朝向
+execute store result entity @s Pos[0] double 0.001 run scoreboard players get 3vec_x int
+execute store result entity @s Pos[1] double 0.001 run scoreboard players get 3vec_y int
+execute store result entity @s Pos[2] double 0.001 run scoreboard players get 3vec_z int
+execute positioned 0.0 0.0 0.0 facing entity @s feet run tp @s ^ ^ ^1.0 ~ ~
+
+#把朝向输出到方向角
+execute store result score 3vec_rot0 int run data get entity @s Rotation[0] 1000
+execute store result score 3vec_rot1 int run data get entity @s Rotation[1] 1000
+
+#单位方向向量转换为临时分数
+execute store result score stempi0 int run data get entity @s Pos[0] 10000
+execute store result score stempi1 int run data get entity @s Pos[1] 10000
+execute store result score stempi2 int run data get entity @s Pos[2] 10000
+
+#求坐标的绝对值和
+scoreboard players operation 3vec_l int = 3vec_x int
+execute if score 3vec_x int matches ..-1 run scoreboard players operation 3vec_l int *= -1 int
+execute if score 3vec_y int matches 1.. run scoreboard players operation 3vec_l int += 3vec_y int
+execute if score 3vec_y int matches ..-1 run scoreboard players operation 3vec_l int -= 3vec_y int
+execute if score 3vec_z int matches 1.. run scoreboard players operation 3vec_l int += 3vec_z int
+execute if score 3vec_z int matches ..-1 run scoreboard players operation 3vec_l int -= 3vec_z int
+
+#求单位向量坐标的绝对值和
+execute if score stempi0 int matches ..-1 run scoreboard players operation stempi0 int *= -1 int
+execute if score stempi1 int matches ..-1 run scoreboard players operation stempi1 int *= -1 int
+execute if score stempi2 int matches ..-1 run scoreboard players operation stempi2 int *= -1 int
+scoreboard players operation stempi0 int += stempi1 int
+scoreboard players operation stempi0 int += stempi2 int
+
+#绝对值相除获得模长
+scoreboard players operation stemp0 int = 3vec_l int
+scoreboard players operation 3vec_l int /= stempi0 int
+scoreboard players operation 3vec_l int *= 10000 int
+scoreboard players operation stemp0 int %= stempi0 int
+scoreboard players operation stemp0 int *= 10000 int
+scoreboard players operation stemp0 int /= stempi0 int
+scoreboard players operation 3vec_l int += stemp0 int
+```
+
+如果是初学命令的读者，不必被上面复杂的运算吓到。这里，我们仅仅是提供一个例子来展现属性扩展的思想，不必关注其中复杂的处理细节。这些复杂的运算处理，我们将在章节<数值运算基础>与章节<数理计算>中深入讲解。
+
 #### 形式转换网
 
 ## 命令函数的组织方式
