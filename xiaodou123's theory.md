@@ -55,7 +55,7 @@
 *从现在开始，让我们简洁优雅地去写好每一条命令吧！*
 
 ```mermaid
-flowchart TB
+flowchart LR
     subgraph base
     a1("命令与函数")-->a2("常用调试技巧")
     end
@@ -73,8 +73,7 @@ flowchart TB
     b2-->c2
     d("系统架构设计与优化")
     base-->d
-    algorithm-->d
-    application-->d
+    c2-->d
 ```
 
 # 命令与函数
