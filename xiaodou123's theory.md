@@ -63,17 +63,18 @@ flowchart LR
     b1("数值运算基础")
     b2("数据处理基础")
     end
-    subgraph application
-    c1("数理计算")
-    c2("数据结构")
+    subgraph system
+        d("系统架构设计与优化")
+        subgraph application
+        c2("数据结构")
+        c1("数理计算")
+        end
     end
     base --> b1
     base --> b2
     b1-->c1
     b2-->c2
-    d("系统架构设计与优化")
     base-->d
-    c2-->d
 ```
 
 # 命令与函数
