@@ -54,6 +54,29 @@
 
 *从现在开始，让我们简洁优雅地去写好每一条命令吧！*
 
+```mermaid
+flowchart TB
+    subgraph base
+    a1("命令与函数")-->a2("常用调试技巧")
+    end
+    subgraph algorithm
+    b1("数值运算基础")
+    b2("数据处理基础")
+    end
+    subgraph application
+    c1("数理计算")
+    c2("数据结构")
+    end
+    base --> b1
+    base --> b2
+    b1-->c1
+    b2-->c2
+    d("系统架构设计与优化")
+    base-->d
+    algorithm-->d
+    application-->d
+```
+
 # 命令与函数
 
 ## 一切还要从函数说起
