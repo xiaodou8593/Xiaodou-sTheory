@@ -420,19 +420,18 @@ function entity:_kill_each_other
 ```mermaid
 graph LR
 subgraph 临时对象
-state0((state0))-->f0-->state1((state1))
-state1-->f1-->state2((state2))
+state0((state0))--"f0"-->state1((state1))
+state1--"f1"-->state2((state2))
 end
-A((form0))-->i0-->state0
-B((form1))-->i1-->state0
-state2-->o0-->C((form2))
-state2-->o1-->D((form3))
-state2-->o2-->E((form4))
+A((form0))--"i0"-->state0
+B((form1))--"i1"-->state0
+state2--"o0"-->C((form2))
+state2--"o1"-->D((form3))
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这里需要注意将这个模型图与我们之前的函数模型图区分。在函数模式图中，节点是函数，数据沿着箭头流动。但在命令处理模型图中，圆节点是不同的数据形式，圆节点之间转换的方块节点才是函数。i0、i1函数将储存形式form0、form1转换成了易于运算处理的临时对象初始形式state0；f0和f1是针对临时对象编写的状态转移函数，它们将临时对象从初始的state0状态转移到了处理完成的state2状态；o0、o1、o2函数将临时对象形式的state2转换到了输出所需的储存形式form2、form3、form4。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这里需要注意将这个模型图与我们之前的函数模型图区分。在函数模式图中，节点是函数，数据沿着箭头流动。但在命令处理模型图中，圆节点是不同的数据形式，圆节点之间转换的方块节点才是函数。i0、i1函数将储存形式form0、form1转换成了易于运算处理的临时对象初始形式state0；f0和f1是针对临时对象编写的状态转移函数，它们将临时对象从初始的state0状态转移到了处理完成的state2状态；o0、o1函数将临时对象形式的state2转换到了输出所需的储存形式form2、form3。
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;由此，我们可以引出本节最为重要的两个概念：形式转换网与临时对象。i0、i1、o0、o1、o2函数以及它们连接的数据形式形成的网络称为形式转换网。数据state0、state1、state2与状态转移函数f0、f1的有机组合称为临时对象。也就是说，**临时对象是易于处理的运算形式**，而**形式转换网是将其它形式与临时对象形式进行相互转化的转换函数网络**。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;由此，我们可以引出本节最为重要的两个概念：形式转换网与临时对象。i0、i1、o0、o1函数以及它们连接的数据形式形成的网络称为形式转换网。数据state0、state1、state2与状态转移函数f0、f1的有机组合称为临时对象。也就是说，**临时对象是易于处理的运算形式**，而**形式转换网是将其它形式与临时对象形式进行相互转化的转换函数网络**。
 
 #### 临时对象
 
