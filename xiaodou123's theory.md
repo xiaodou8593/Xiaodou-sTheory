@@ -66,8 +66,8 @@ flowchart LR
     subgraph system
         d("系统架构设计与优化")
         subgraph application
-        c2("数据结构")
         c1("数理计算")
+        c2("数据结构")
         end
     end
     base --> b1
