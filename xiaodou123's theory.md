@@ -2,27 +2,27 @@
 
 - [前言](#%E5%89%8D%E8%A8%80)
 - [命令与函数](#%E5%91%BD%E4%BB%A4%E4%B8%8E%E5%87%BD%E6%95%B0)
-    - [一切还要从函数说起](#%E4%B8%80%E5%88%87%E8%BF%98%E8%A6%81%E4%BB%8E%E5%87%BD%E6%95%B0%E8%AF%B4%E8%B5%B7)
-        - [什么是函数](#%E4%BB%80%E4%B9%88%E6%98%AF%E5%87%BD%E6%95%B0)
-        - [命令也是一种函数](#%E5%91%BD%E4%BB%A4%E4%B9%9F%E6%98%AF%E4%B8%80%E7%A7%8D%E5%87%BD%E6%95%B0)
-    - [命令函数的基本要素](#%E5%91%BD%E4%BB%A4%E5%87%BD%E6%95%B0%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%A6%81%E7%B4%A0)
-        - [输入输出](#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA)
-            - [执行方式：天然的命令输入](#%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F%E5%A4%A9%E7%84%B6%E7%9A%84%E5%91%BD%E4%BB%A4%E8%BE%93%E5%85%A5)
-            - [人工维护的输入输出](#%E4%BA%BA%E5%B7%A5%E7%BB%B4%E6%8A%A4%E7%9A%84%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA)
-            - [输入输出部分的总结](#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E9%83%A8%E5%88%86%E7%9A%84%E6%80%BB%E7%BB%93)
-        - [命令处理](#%E5%91%BD%E4%BB%A4%E5%A4%84%E7%90%86)
-            - [临时对象](#%E4%B8%B4%E6%97%B6%E5%AF%B9%E8%B1%A1)
-            - [形式转换网](#%E5%BD%A2%E5%BC%8F%E8%BD%AC%E6%8D%A2%E7%BD%91)
-            - [命令处理部分的总结](#%E5%91%BD%E4%BB%A4%E5%A4%84%E7%90%86%E9%83%A8%E5%88%86%E7%9A%84%E6%80%BB%E7%BB%93)
-    - [命令函数的组织方式](#%E5%91%BD%E4%BB%A4%E5%87%BD%E6%95%B0%E7%9A%84%E7%BB%84%E7%BB%87%E6%96%B9%E5%BC%8F)
-        - [顺序](#%E9%A1%BA%E5%BA%8F)
-            - [function构造](#function%E6%9E%84%E9%80%A0)
-            - [execute构造](#execute%E6%9E%84%E9%80%A0)
-        - [分支](#%E5%88%86%E6%94%AF)
-        - [递归](#%E9%80%92%E5%BD%92)
-            - [尾递归循环](#%E5%B0%BE%E9%80%92%E5%BD%92%E5%BE%AA%E7%8E%AF)
-            - [广义递归](#%E5%B9%BF%E4%B9%89%E9%80%92%E5%BD%92)
-        - [回调](#%E5%9B%9E%E8%B0%83)
+  - [一切还要从函数说起](#%E4%B8%80%E5%88%87%E8%BF%98%E8%A6%81%E4%BB%8E%E5%87%BD%E6%95%B0%E8%AF%B4%E8%B5%B7)
+    - [什么是函数](#%E4%BB%80%E4%B9%88%E6%98%AF%E5%87%BD%E6%95%B0)
+    - [命令也是一种函数](#%E5%91%BD%E4%BB%A4%E4%B9%9F%E6%98%AF%E4%B8%80%E7%A7%8D%E5%87%BD%E6%95%B0)
+  - [命令函数的基本要素](#%E5%91%BD%E4%BB%A4%E5%87%BD%E6%95%B0%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%A6%81%E7%B4%A0)
+    - [输入输出](#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA)
+      - [执行方式：天然的命令输入](#%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F%E5%A4%A9%E7%84%B6%E7%9A%84%E5%91%BD%E4%BB%A4%E8%BE%93%E5%85%A5)
+      - [人工维护的输入输出](#%E4%BA%BA%E5%B7%A5%E7%BB%B4%E6%8A%A4%E7%9A%84%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA)
+      - [输入输出部分的总结](#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E9%83%A8%E5%88%86%E7%9A%84%E6%80%BB%E7%BB%93)
+    - [命令处理](#%E5%91%BD%E4%BB%A4%E5%A4%84%E7%90%86)
+      - [临时对象](#%E4%B8%B4%E6%97%B6%E5%AF%B9%E8%B1%A1)
+      - [形式转换网](#%E5%BD%A2%E5%BC%8F%E8%BD%AC%E6%8D%A2%E7%BD%91)
+      - [命令处理部分的总结](#%E5%91%BD%E4%BB%A4%E5%A4%84%E7%90%86%E9%83%A8%E5%88%86%E7%9A%84%E6%80%BB%E7%BB%93)
+  - [命令函数的组织方式](#%E5%91%BD%E4%BB%A4%E5%87%BD%E6%95%B0%E7%9A%84%E7%BB%84%E7%BB%87%E6%96%B9%E5%BC%8F)
+    - [顺序](#%E9%A1%BA%E5%BA%8F)
+      - [function构造](#function%E6%9E%84%E9%80%A0)
+      - [execute构造](#execute%E6%9E%84%E9%80%A0)
+    - [分支](#%E5%88%86%E6%94%AF)
+    - [递归](#%E9%80%92%E5%BD%92)
+      - [尾递归循环](#%E5%B0%BE%E9%80%92%E5%BD%92%E5%BE%AA%E7%8E%AF)
+      - [广义递归](#%E5%B9%BF%E4%B9%89%E9%80%92%E5%BD%92)
+    - [回调](#%E5%9B%9E%E8%B0%83)
 - [常用调试技巧](#%E5%B8%B8%E7%94%A8%E8%B0%83%E8%AF%95%E6%8A%80%E5%B7%A7)
 - [数值运算基础](#%E6%95%B0%E5%80%BC%E8%BF%90%E7%AE%97%E5%9F%BA%E7%A1%80)
 - [数理计算](#%E6%95%B0%E7%90%86%E8%AE%A1%E7%AE%97)
@@ -802,9 +802,141 @@ execute store result score 3vec_z int run data get entity @s Pos[2] 1000
 
 ### 顺序
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;顺序是命令函数最常见的组织方式，我们通常使用function与execute遍历两种方法来构造顺序。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;顺序是命令函数最常见的组织方式，例如：所有的单条命令都是依次执行的。单条命令总是在一条执行完之后再执行另一条，不存在“同时”的概念(单线程)。因此，命令函数总是依照某种顺序来执行。我们通常使用function与execute遍历两种方法来构造命令函数顺序。
 
 #### function构造
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在mcfunction文件中，按行依次写下函数f0,f1,f2......fn，运行这个function，将会依次执行f0,f1,f2......fn。设一个自然数i，i<n。函数fi+1总是在fi运行完后再运行，且两个函数之间不可能会有其它函数运行。我们称这种顺序为依次执行，模型图如下：
+
+```mermaid
+graph TB
+A(func0)-->B(func1)-->C[......]-->D(funcn)
+```
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果funci是一段命令，我们可以把它重新划分成不同的函数部分，或是放进一个mcfunction文件进行重组，或是相反，把许多不同的部分合并成一段，都不改变整体函数的处理，与原函数等价。另外，给两段函数funca和funcb，如果funca的输出与funb的输入无关，funb的输出与funca的输入无关，那么它们还可以交换顺序，改变顺序后整体函数也与原函数等价。
+
+例如：
+
+```
+#计算1/l*(pos+uvec)模长平方
+scoreboard players operation tempx int += tempi int
+scoreboard players operation tempy int += tempj int
+scoreboard players operation tempz int += tempk int
+scoreboard players operation tempx int /= templ int
+scoreboard players operation tempy int /= templ int
+scoreboard players operation tempz int /= templ int
+scoreboard players operation tempx int *= tempx int
+scoreboard players operation tempy int *= tempy int
+scoreboard players operation tempz int *= tempz int
+scoreboard players operation tempd int = tempx int
+scoreboard players operation tempd int += tempy int
+scoreboard players operation tempd int += tempz int
+```
+
+经过我们交换顺序并重组后：
+
+```
+#x坐标
+scoreboard players operation tempx int += tempi int
+scoreboard players operation tempx int /= templ int
+scoreboard players operation tempx int *= tempx int
+
+#y坐标
+scoreboard players operation tempy int += tempj int
+scoreboard players operation tempy int /= templ int
+scoreboard players operation tempy int *= tempy int
+
+#z坐标
+scoreboard players operation tempz int += tempk int
+scoreboard players operation tempz int /= templ int
+scoreboard players operation tempz int *= tempz int
+
+#获得模长平方
+scoreboard players operation tempd int = tempx int
+scoreboard players operation tempd int += tempy int
+scoreboard players operation tempd int += tempz int
+```
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;由此可以看出，我们需要根据命令段的前后逻辑，合理地调整和重组依次执行的顺序，在合适的地方加上空行，使命令段有更好的可读性。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;现在我们来探讨输入输出与临时对象在依次执行中的兼容性问题。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对于执行方式表示的输入，由于执行方式具有局部性，每条命令都有属于自己的执行方式，冲突不会发生，完全兼容。
+
+例：
+
+```
+#test
+setblock ~ ~1 ~ stone
+setblock ~ ~2 ~ glass
+```
+
+两条命令都使用了执行方式，输入了不同的坐标，石头的玻璃均被放置在正确的位置。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对于人工维护的输入输出，任意两个函数funci和funcj，如果funci与funcj使用了相同的表示，例如funci在funcj之前，当funci执行结束后再执行funcj，由于输入输出每次使用都被重新赋值(例如tag @e remove input)，与之前的输入输出使用情况无关，因此冲突不会发生，完全兼容。
+
+例子：
+
+```
+#test
+scoreboard players set inp int 16
+function math:_sqrt
+scoreboard players get res int
+
+scoreboard players set inp int 64
+function math:sqrt/_3sqrt
+scoreboard players get res int
+```
+
+这里使用了相同的输入形式<inp,int>，分别用16和64去调用了两个不同的开根号函数，分别都得到了正确答案4和8000。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对于临时对象形式，任意两个函数funci和funcj，如果funci与funcj的处理使用了相同的表示，例如funci在funcj之前，当funci执行结束后再执行funcj，由于临时对象每次使用要么被重新赋值(例如临时方块的setblock 0 11 0 air)，要么被规定在使用完成后清除(例如临时实体的kill @e[tag=tmp])，与之前的临时对象使用情况无关，因此冲突不会发生，完全兼容。
+
+例：
+
+```
+#test
+scoreboard players operation temp int = inp0 int
+scoreboard players operation temp int += inp1 int
+tellraw @a {"score":{"name":"temp","objective":"int"}}
+
+scoreboard players operation temp int = inp2 int
+scoreboard players operation temp int += inp3 int
+tellraw @a {"score":{"name":"temp","objective":"int"}}
+```
+
+这里处理了两组不同的输入{<inp0,int>,<inp1,int>}和{<inp2,int>,<inp3,int>}，却使用了同一个临时分数temp，分别使用tellraw输出了两组输入的和。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;因此，我们得到结论：如果不同的命令函数使用了相同的基本要素表示，在依次执行中完全兼容。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;除了依次执行，利用mcfunction，我们还可以在一段命令函数的中间插入另一个函数。例如整段函数是f0，插入的函数是f1，那么f1将f0划分为了三部分：f0_part0,f1,f0_part1。执行f0也即依次执行f0_part0,f1,f0_part1。我们把f0与f1的顺序称为嵌套执行。嵌套执行的模型图如下：
+
+```mermaid
+graph TB
+subgraph "func0"
+    subgraph "func1"
+    A(f1_part0)-->B(func2)-->C(f1_part1)
+    end
+    D(f0_part0)-->A
+    C-->E(f0_part1)
+end
+```
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在嵌套模型中，我们探究这两个概念：函数层级，输入输出的本质。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;函数层级：我们假设func0函数是直接面向用户的命令环境（例如聊天框、命令方块、tick/load中调用的函数），规定func0函数为0级函数。当i级函数嵌套执行了函数funci+1，那么函数funci+1的层级是i+1。例如在这个模型中func1是1级函数，func2是2级函数。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;输入输出的本质：在嵌套模型中我们可以发现，func0将自己中间处理过程中的数据作为输入，调用了func1。而func1用自己中间处理过程中的数据作为输入，调用了func2。总结起来，对于i>0，i级函数的输入是调用自己的i-1级函数的临时对象，而i级函数的输出将会被用作i-1级函数的的临时对象。因此我们说，输入输出的本质是来自高层的临时对象。特别地，对于0级函数，它的输入输出来自于用户(玩家交互与mc世界)。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;现在我们来探究输入输出与临时对象在嵌套执行中的兼容性问题。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对于执行方式表示的输入，由于它具有局部性，完全兼容（与依次执行同理，不再论述）。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对于人工维护的输入输出，因为本质是来自高层的临时对象，它们与人工构造的临时对象具有相同的兼容性。由于临时对象具有全局性，那么我们在嵌套了func1的func0函数中，如果使用了与func1或func2中相同表示的临时对象，那么冲突就发生了：f0_part0中使用的临时对象，在func1中被修改，那么在f0_part1中无法继续f0_part0中对临时对象的计算。为了解决这种冲突，我们需要引入一种命名机制来避免临时对象的冲突。在本书中使用的命名机制是s命名法。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s命名法：在n级函数的临时对象命名前加上n-1个字符's'。例如1级函数中使用临时分数<tempx,int>，在2级函数中对应<stempx,int>，在3级函数中对应<sstempx,int>。s意为"support"，底层函数是对高层函数的支持。指的注意的是，由于2级函数的输入输出是来自1级函数的临时对象，因此2级函数的输入输出是一个1级表示：<inp,int>,<res,int>。同理，3级函数的输入输出是一个2级表示：<sinp,int>,<sres,int>。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s命名法中的"越级上报"现象：高层函数可以直接调用更底层函数，不会引起冲突(例如0级函数调用2级函数)。底层函数可以直接拿取高层函数的数据作为输入，不会因此冲突(例如2级函数可以直接获取玩家数据，而玩家数据属于用户层的0级环境)。
 
 #### execute构造
 
