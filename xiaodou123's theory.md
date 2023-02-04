@@ -940,6 +940,24 @@ end
 
 #### execute构造
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;使用execute遍历是另外一种构造命令函数顺序的方法。例如世界上有5个实体，ABCDE(这里默认为选择器未指定sort参数时的实体加载顺序，例如先summon A，那么A会第一个被选择)，使用命令`execute as @e run say hi`可以遍历这5个实体，让它们分别输出hi。那么execute的顺序只是依次执行A say hi , B say hi，C say hi，D say hi，E say hi吗？为了更加深入地理解一条execute的处理顺序，让我们来实现<输入输出部分>例子中引用到的entity:_kill_each_other函数。
+
+```
+#entity:_kill_each_other
+tag @e remove result
+execute as @e[tag=input,sort=random] run function entity:kill_another
+tag @e[tag=input,limit=1] add result
+
+#entity:kill_another
+tag @s add tmp
+tag @e[tag=input,tag=!tmp,limit=1,sort=random]
+tag @s remove tmp
+```
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们让输入池中的实体按随机顺序去执行kill_another函数，而kill_another函数的功能是杀死除自己以外的随机一个输入实体。那么，我们预期会有随机一名实体活下来，把它打上result标签输出。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;然而，当我们实际运行后发现，并没有实体活下来。为了解释这种现象，我们需要引入实时解析与预解析的概念。
+
 ### 分支
 
 ### 递归
