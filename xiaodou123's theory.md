@@ -2,23 +2,23 @@
 
 - [前言](#%E5%89%8D%E8%A8%80)
 - [命令与函数](#%E5%91%BD%E4%BB%A4%E4%B8%8E%E5%87%BD%E6%95%B0)
-    - [一切还要从函数说起](#%E4%B8%80%E5%88%87%E8%BF%98%E8%A6%81%E4%BB%8E%E5%87%BD%E6%95%B0%E8%AF%B4%E8%B5%B7)
-        - [什么是函数](#%E4%BB%80%E4%B9%88%E6%98%AF%E5%87%BD%E6%95%B0)
-        - [命令也是一种函数](#%E5%91%BD%E4%BB%A4%E4%B9%9F%E6%98%AF%E4%B8%80%E7%A7%8D%E5%87%BD%E6%95%B0)
-    - [命令函数的基本要素](#%E5%91%BD%E4%BB%A4%E5%87%BD%E6%95%B0%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%A6%81%E7%B4%A0)
-        - [输入输出](#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA)
-            - [执行方式：天然的命令输入](#%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F%E5%A4%A9%E7%84%B6%E7%9A%84%E5%91%BD%E4%BB%A4%E8%BE%93%E5%85%A5)
-            - [人工维护的输入输出](#%E4%BA%BA%E5%B7%A5%E7%BB%B4%E6%8A%A4%E7%9A%84%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA)
-        - [命令处理](#%E5%91%BD%E4%BB%A4%E5%A4%84%E7%90%86)
-            - [临时对象](#%E4%B8%B4%E6%97%B6%E5%AF%B9%E8%B1%A1)
-            - [形式转换网](#%E5%BD%A2%E5%BC%8F%E8%BD%AC%E6%8D%A2%E7%BD%91)
-    - [命令函数的组织方式](#%E5%91%BD%E4%BB%A4%E5%87%BD%E6%95%B0%E7%9A%84%E7%BB%84%E7%BB%87%E6%96%B9%E5%BC%8F)
-        - [顺序](#%E9%A1%BA%E5%BA%8F)
-        - [分支](#%E5%88%86%E6%94%AF)
-        - [递归](#%E9%80%92%E5%BD%92)
-            - [尾递归](#%E5%B0%BE%E9%80%92%E5%BD%92%E5%BE%AA%E7%8E%AF)
-            - [广义递归](#%E5%B9%BF%E4%B9%89%E9%80%92%E5%BD%92)
-        - [回调](#%E5%9B%9E%E8%B0%83)
+  - [一切还要从函数说起](#%E4%B8%80%E5%88%87%E8%BF%98%E8%A6%81%E4%BB%8E%E5%87%BD%E6%95%B0%E8%AF%B4%E8%B5%B7)
+    - [什么是函数](#%E4%BB%80%E4%B9%88%E6%98%AF%E5%87%BD%E6%95%B0)
+    - [命令也是一种函数](#%E5%91%BD%E4%BB%A4%E4%B9%9F%E6%98%AF%E4%B8%80%E7%A7%8D%E5%87%BD%E6%95%B0)
+  - [命令函数的基本要素](#%E5%91%BD%E4%BB%A4%E5%87%BD%E6%95%B0%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%A6%81%E7%B4%A0)
+    - [输入输出](#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA)
+      - [执行方式：天然的命令输入](#%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F%E5%A4%A9%E7%84%B6%E7%9A%84%E5%91%BD%E4%BB%A4%E8%BE%93%E5%85%A5)
+      - [人工维护的输入输出](#%E4%BA%BA%E5%B7%A5%E7%BB%B4%E6%8A%A4%E7%9A%84%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA)
+    - [命令处理](#%E5%91%BD%E4%BB%A4%E5%A4%84%E7%90%86)
+      - [临时对象](#%E4%B8%B4%E6%97%B6%E5%AF%B9%E8%B1%A1)
+      - [形式转换网](#%E5%BD%A2%E5%BC%8F%E8%BD%AC%E6%8D%A2%E7%BD%91)
+  - [命令函数的组织方式](#%E5%91%BD%E4%BB%A4%E5%87%BD%E6%95%B0%E7%9A%84%E7%BB%84%E7%BB%87%E6%96%B9%E5%BC%8F)
+    - [顺序](#%E9%A1%BA%E5%BA%8F)
+    - [分支](#%E5%88%86%E6%94%AF)
+    - [递归](#%E9%80%92%E5%BD%92)
+      - [尾递归](#%E5%B0%BE%E9%80%92%E5%BD%92%E5%BE%AA%E7%8E%AF)
+      - [广义递归](#%E5%B9%BF%E4%B9%89%E9%80%92%E5%BD%92)
+    - [回调](#%E5%9B%9E%E8%B0%83)
 - [常用调试技巧](#%E5%B8%B8%E7%94%A8%E8%B0%83%E8%AF%95%E6%8A%80%E5%B7%A7)
 - [数值运算基础](#%E6%95%B0%E5%80%BC%E8%BF%90%E7%AE%97%E5%9F%BA%E7%A1%80)
 - [数理计算](#%E6%95%B0%E7%90%86%E8%AE%A1%E7%AE%97)
@@ -47,7 +47,7 @@
 四.如何读这本书？
 
 - 读懂每一条命令
-- 多进游戏测试和实践
+- 多进游戏测试和实践(最好一边学一边写，最后可以完成一个属于你的前置数据包)
 - 书中难免有纰漏，若发现，请及时反馈给我！(QQ:859345316)
 - 理论中的命令思想适用于java版mc1.14-1.19.2（2022.11.7），具体运行结果参考1.19.2
 
@@ -263,7 +263,7 @@ rotated把执行朝向累加到(0.0f,91.0f)后，facing ^ ^ ^1会把执
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;记分板经常被用来表示有限范围的数值(包括整数和小数)，它的表示范围是-2^31~2^31-1(即-2147483648到2147483647)。对于普通整数，直接取原数值即可。对于普通小数，我们需要事先规定好一个倍率(有时也称精度)。例如1k倍率的小数，那么2333表示的实际数值是2.333。对于较大的整数或精度较高的小数，我们就需要多个记分板分数来表示一个数值。本书中最常用的记分板输入输出是两个临时对象：inp(input的缩写)和res(result的缩写)，它们的记分板表示形式是<inp,int>和<res,int>。本书最常用的普通小数倍率是1k。
 
-例：
+#例：
 
 ```
 scoreboard players set inp int 64
@@ -277,7 +277,7 @@ scoreboard players get res int
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;storage是一种自定义nbt的储存介质。自定义nbt具有高度的自由性，经常被用于表示各种具有复杂结构的数据，甚至是被用于表示一个对象。本书中最常用的两个storage分别是math:class与math:io。math:class的特点是只用于储存静态的数据模板，它们在初始化阶段被设置，在运行阶段只读(与整数的int定义异曲同工)。math:io与math:class相反，它只用于储存运行过程中产生的各类临时数据和输入输出。对于输入输出，我们使用math:io中的input和result两个临时对象进行表示。下面三个例子可以很好地解释class与io的使用方式：
 
-例1：
+#例1：
 
 ```
 data modify storage math:io input set from math:class vehicles[{id:"plane"}]
@@ -286,7 +286,7 @@ function vehicles:_new
 
 这段命令将载具类中飞机的数据模板放入input，然后调用了载具的构造函数，实例化了一个飞机对象。
 
-例2：
+#例2：
 
 ```
 data modify storage math:io input set from storage math:class vehicles[{id:"garbage_truck"}]
@@ -296,7 +296,7 @@ function vehicles:_new
 
 这段命令构造了一个临时类：载具是跑车，但同时继承了垃圾车的部分属性，然后运行了载具的构造函数，将其实例化为对象。
 
-例3：
+#例3：
 
 ```
 data modify storage math:io input set from storage math:class vehicles[{id:"sports_car"}]
@@ -310,7 +310,7 @@ function vehicles:_new
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;实体是命令中最常用的对象，它具有功能性与逻辑性。在功能性的一面：原版生物AI可以为我们所用，盔甲架/物品展示框可以为我们提供模型显示服务，载具类实体可以提供座椅，抛射物可以制作发射效果......在逻辑性的一面：实体可以直接通过as、at等execute子命令与执行方式沟通，实现围绕实体的一系列逻辑。可以说传统命令的实质是面向实体编程。在命令中，我们最常使用的实体指代方法是使用tag。本书中对输入输出实体的指代tag分别是input和result。每次将实体置入输入输出池之前，我们首先应使用tag @e remove input/result进行输入输出池的释放。这里使用@e而不是@e[tag=]，是为了避免后者画蛇添足性的性能损坏：后者会把检查tag是否存在的操作在有tag实体上进行两次。以下几个例子展示实体输入输出的用法：
 
-例1：
+#例1：
 
 ```
 #entity:_new
@@ -321,7 +321,7 @@ summon marker 0 11 0 {Tags:["result","entity"]}
 
 该entity的构造函数会返回一个marker实体。当其他开发者调用entity:_new函数时，便可以使用@e[tag=result,limit=1]对返回实体进行唯一确定的指代。
 
-例2：
+#例2：
 
 ```
 #entity:test
@@ -447,7 +447,7 @@ state2--"o1"-->D((form3))
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;临时分数：用记分板分数表示的数值类型临时对象。本书中，我们使用含有子字符串"temp"的虚拟玩家在记分板int上的分数来表示一个临时分数。例如：<tempx,int>,<templ,int>,<temp_id,int>,<temp,int>。就像输入输出形式那样，小数数值的临时分数需要事先规定好一个倍率例如1k。由此可以看出，**临时对象类型的定义不仅包含mc中存在的表示形式，还包含人为的规定，相同表示形式但人为规定不同的形式不能认为是同一类型。**
 
-例1：将输入的整数类型nbt转化为临时对象后进行+1处理返还
+#例1：将输入的整数类型nbt转化为临时对象后进行+1处理返还
 
 ```
 execute store result score temp int run data get storage math:io input
@@ -470,7 +470,7 @@ execute store result storage math:io input int -1 run data get storage math:io i
 
 这条命令巧妙地利用倍率与向下取整的性质，直接在原nbt上实现了一定范围内的加1运算，并没有借助临时分数。不过，目前没有证据显示这样做对性能有优化作用，所以在命令的可读性方面考虑，我们不推荐这种写法。在实际开发中，利用倍率实现乘法运算是更为正常的做法：
 
-例2：绕开临时分数，直接对浮点数进行乘10运算
+#例2：绕开临时分数，直接对浮点数进行乘10运算
 
 ```
 execute store result storage math:io input double 0.001 run data get storage math:io input 10000
@@ -486,7 +486,7 @@ execute store result storage math:io input 10 run data get storage math:io input
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;临时nbt：用storage表示的临时对象，其数据通常具有复杂的层次或顺序结构。本书中，我们使用在storage math:io中带有子字符串"temp"的标签表示一个临时nbt，例如：storage math:io temp_cmp，storage math:io temp_list等。
 
-例：交换输入的两项nbt
+#例：交换输入的两项nbt
 
 ```
 data modify storage math:io temp set from storage math:io input[0]
@@ -498,7 +498,7 @@ data modify storage math:io input[1] set from storage math:io temp
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;临时实体：使用tag对实体进行指代，表示一个实体类型的临时对象。本书中，我们使用带有子字符串"tmp"的标签指代一个临时实体，例如@e[tag=tmp,limit=1]。注意本书中对“临时”的缩写习惯，使用了两种不同的表示：temp、tmp，而它们的用法有所不同。当被指代的是一个确切的值(例如记分板分数、nbt值)，强调值的可重复属性时(例如不同的变量可能具有相同的值是2)，我们使用temp进行指代；当被指代的是一个对象(通常是一个实体)，强调其独一无二的属性时(例如实体的位置和朝向几乎不可能相同)，我们使用tmp进行指代。这样使用两种不相同的指代方法可以增加不同类型元素的区分度，方便辨别，增加命令的可读性(至少不会一眼望去全是temp了)。
 
-例1：召唤一只分数level为5的村民
+#例：召唤一只分数level为5的村民
 
 ```
 summon villager ~ ~ ~
@@ -517,7 +517,7 @@ tag @e remove tmp
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;临时物品：物品形式的临时对象。在对物品进行处理时，我们便需要引入临时物品。这里，我们使用0 0 0坐标的箱子的0号栏位存放临时物品，使用block 0 0 0 container.0或block 0 0 0 Items[0]即可指代临时物品。
 
-例：把玩家手持物品数量修改为64个
+#例：把玩家手持物品数量修改为64个
 
 ```
 item replace block 0 0 0 container.0 from entity @s weapon.mainhand
@@ -529,7 +529,7 @@ item replace entity @s weapon.mainhand from block 0 0 0 container.0
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;临时方块：方块形式的临时对象。在对方块进行处理时，我们需要引入临时方块，另外在对文本进行处理时，我们还需要引入一种特殊的临时方块：告示牌。本书使用0 11 0坐标放置所有的临时方块。为了避免此前的临时方块与当前临时方块id相同导致setblock失败，我们规定使用0 11 0放置临时方块之前首先应在0 11 0放置空气。
 
-例1：告示牌解析分数文本，输出到执行者实体的CustomName
+#例1：告示牌解析分数文本，输出到执行者实体的CustomName
 
 ```
 setblock 0 11 0 air
@@ -552,7 +552,7 @@ selector。许多JSON文本显示位置无法解析这类组件，例
 </details>
 
 .
-例2：输入两个坐标，把坐标0位置的方块输出到坐标1位置。
+#例2：输入两个坐标，把坐标0位置的方块输出到坐标1位置。
 
 ```
 summon marker 0 11 0 {Tags:["tmp"]}
@@ -811,7 +811,7 @@ A(func0)-->B(func1)-->C[......]-->D(funcn)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果funci是一段命令，我们可以把它重新划分成不同的函数部分，或是放进一个mcfunction文件进行重组，或是相反，把许多不同的部分合并成一段，都不改变整体函数的处理，与原函数等价。另外，给两段函数funca和funcb，如果funca的输出与funb的输入无关，funb的输出与funca的输入无关，那么它们还可以交换顺序，改变顺序后整体函数也与原函数等价。
 
-例如：
+#例：
 
 ```
 #计算1/l*(pos+uvec)模长平方
@@ -859,7 +859,7 @@ scoreboard players operation tempd int += tempz int
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对于执行方式表示的输入，由于执行方式具有局部性，每条命令都有属于自己的执行方式，冲突不会发生，完全兼容。
 
-例：
+#例：
 
 ```
 #test
@@ -871,7 +871,7 @@ setblock ~ ~2 ~ glass
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对于人工维护的输入输出，任意两个函数funci和funcj，如果funci与funcj使用了相同的表示，例如funci在funcj之前，当funci执行结束后再执行funcj，由于输入输出每次使用都被重新赋值(例如tag @e remove input)，与之前的输入输出使用情况无关，因此冲突不会发生，完全兼容。
 
-例子：
+#例：
 
 ```
 #test
@@ -953,6 +953,105 @@ tag @s remove tmp
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们让输入池中的实体按随机顺序去执行kill_another函数，而kill_another函数的功能是杀死除自己以外的随机一个输入实体。那么，我们预期会有随机一名实体活下来，把它打上result标签输出。
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;然而，当我们实际运行后发现，并没有实体活下来。为了解释这种现象，我们需要引入实时解析与预解析的概念。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;实时解析：如果A有BC，A结束后立即BC。同理，如果B有DE，B结束后立即DE，那么实际的顺序是ABDEC。我们称ABCDE之间是实时解析的。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;预解析：如果A有BC，D有EF，A结束后先是把BC加入一个队列，D结束后又把EF加入队列，AD结束后再依次处理队列中的BCEF，那么实际顺序是ADBCEF。我们称AD相对于BCEF是预解析的。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们把execute子命令中，右边的子命令看作是左边的子命令的从属，把if/unless、run子命令定义为"可返回子命令"。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在一条execute命令中，最右边的子命令必然是一个可返回子命令。而execute中可能存在的store子命令，它统计的是最右边的可返回子命令的返回值。把store的运行分为两个过程：1.解释store本身的含义，把返回值的去处像标签一样“贴”到最右边的可返回子命令上；2.运行把返回值赋值到去处。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;那么一条execute命令的运行过程可以被我们划分为两部分：1.对左边的子命令进行解析，进行执行方式的状态转移，进行条件的判断来中断或继续，进行store含义的解析；2.执行最右边的可返回子命令，将可返回子命令的返回值赋值到store的去处。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们的结论是：1、2过程中的子命令之间分别是实时解析的，而1过程相对于2过程是预解析的。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;那么不难看出，在之前的_kill_each_other函数的execute命令中，所有的实体在预解析过程中都被分配了执行kill_another函数的任务，而此时kill_another函数还未运行，它们全部存活。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;预解析的过程结束后，开始执行所有的kill_another函数，即使是已经被kill标记死亡的实体仍然会执行已被分配的kill_another函数任务，随机杀死一个未被标记死亡的实体。如果有n只实体，"随机杀死一个未被标记死亡的实体"，这个过程进行了n次，最终结果也即全部实体被杀死。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们再举例几个execute的用法，希望读者能够加深对execute运行的理解，并能成功解释它们的运行结果。
+
+#例1：有n个实体，获取它们的x坐标。
+
+```
+execute store result score last_x int as @e[sort=furthest] store result score @s x run data get entity @s Pos[0]
+```
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;运行结果：所有实体把自己的x坐标获取到了自己的x记分板，last_x int记分板记录了最远的实体的x坐标。
+
+#例2：假设两个输入实体位置不同，交换它们的位置。
+
+```
+execute as @e[tag=input] at @s at @e[tag=input,limit=1,sort=furthest] run tp @s ~ ~ ~
+```
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;运行结果：两实体成功交换位置。读者试分析两个at分别的作用。
+
+#例3：假设有n个实体位置不同，让它们像环一样转圈。
+
+```
+#给所有实体编号
+scoreboard players set temp int 0
+execute as @e store result score @s int run scoreboard players add temp int 1
+#目的地是自己的编号+1
+execute as @e run scoreboard players operation @s tp = @s int
+scoreboard players add @e tp 1
+#n号实体的目的地是1
+scoreboard players operation @e tp %= temp int
+#运行传送
+execute as @e at @e if score @s tp = @e[sort=nearest,limit=1] int run tp @s ~ ~ ~
+```
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;运行结果：所有实体到达了目的地。1号实体到了原来2号实体的位置，2号实体到了原来3号实体的位置，......，n-1号实体到了原来n号实体的位置，n号实体到了原来1号实体的位置。
+
+#例4：n个实体，奇偶交替
+
+```
+scoreboard players set test int 0
+execute as @e if score test int matches 0 store result score test int if score test int matches 0
+```
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;运行结果：如果n是奇数，<test,int>变为1，如果n是偶数，<test,int>变为0。运行过程中<test,int>的值在01之间交替，第一个if score test int matches 0形同虚设，没有中断命令的运行。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;其实，实时解析与预解析的概念在命令中普遍存在。例如在<function构造>中，我们利用mcfunction实现命令函数的复合，这些命令函数之间便是实时解析的。在<回调>一节中，我们会发现使用mcfunction调用命令方块时，mcfunction相对于命令方块是预解析的。如果读者有一定的算法基础，也可以把实时解析和预解析的概念与深度优先搜索(DFS)和广度优先搜索(BFS)的概念进行类比。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;由于使用execute构造多条命令函数的顺序时，这些命令函数之间遵循我们在function构造中讲到的"依次执行"模型，输入输出和临时对象的兼容性与那个模型相同，这里不再论述。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最后，我们来介绍execute与function的互相嵌套问题。让我们假设世界上只有m个实体，它们全是盔甲架，如果做三次实验，每次分别运行以下函数，分别会得到几个盔甲架？
+
+#例1
+
+```
+execute as @e as @e run summon armor_stand ~ ~ ~
+```
+
+根据实时解析与预解析的理论，在预解析阶段，两层as @e构造了一个m^2次数的顺序，把m^2条summon命令加入了执行列表，然后处理执行列表，执行了m^2次生成盔甲架，因此最后会有m^2+m个盔甲架。
+
+```mermaid
+graph TB
+subgraph "execute"
+E("execute as @e as @e run summon armor_stand ~ ~ ~")
+end
+subgraph list
+A("summon armor_stand ~ ~ ~")
+B("summon armor_stand ~ ~ ~")
+C("summon armor_stand ~ ~ ~")
+D("summon armor_stand ~ ~ ~")
+end
+E-->A
+E-->B
+E-->C
+E-->D
+```
+
+#例2
+
+```
+execute as @e run execute as @e run summon armor_stand ~ ~ ~
+```
+
+首先根据实时解析与预解析的理论，第一层execute as @e run把m条"execute as @e run summon armor_stand ~ ~ ~"加入了执行列表。处理执行列表时，一边处理前面的m条"execute as @e run summon armor_stand ~ ~ ~"，一边在执行列表后面追加新的summon命令，每条"execute as @e run summon armor_stand ~ ~ ~"都会追加m条summon命令，总共有m条，因此最后依然会有m^2条summon命令，最后会有m^2+m个盔甲架。
 
 ### 分支
 
