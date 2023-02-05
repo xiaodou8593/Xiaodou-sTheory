@@ -1018,7 +1018,7 @@ execute as @e if score test int matches 0 store result score test int if score t
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;由于使用execute构造多条命令函数的顺序时，这些命令函数之间遵循我们在function构造中讲到的"依次执行"模型，输入输出和临时对象的兼容性与那个模型相同，这里不再论述。
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最后，我们来介绍execute与function的互相嵌套问题。让我们假设世界上只有m个实体，它们全是盔甲架，如果做三次实验，每次分别运行以下函数，分别会得到几个盔甲架？
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最后，我们来介绍execute与function的互相嵌套问题。让我们假设世界上只有x个实体，它们全是盔甲架，如果做三次实验，每次分别运行以下函数，分别会得到几个盔甲架？
 
 #例1
 
@@ -1026,7 +1026,7 @@ execute as @e if score test int matches 0 store result score test int if score t
 execute as @e as @e run summon armor_stand ~ ~ ~
 ```
 
-根据实时解析与预解析的理论，在预解析阶段，两层as @e构造了一个m^2次数的顺序，把m^2条summon命令加入了执行列表，然后处理执行列表，执行了m^2次生成盔甲架，因此最后会有m^2+m个盔甲架。
+根据实时解析与预解析的理论，在预解析阶段，两层as @e构造了一个x^2次数的顺序，把x^2条summon命令加入了执行列表，然后处理执行列表，执行了x^2次生成盔甲架，因此最后会有x^2+x个盔甲架。
 
 ```mermaid
 graph TB
@@ -1051,7 +1051,50 @@ E-->D
 execute as @e run execute as @e run summon armor_stand ~ ~ ~
 ```
 
-首先根据实时解析与预解析的理论，第一层execute as @e run把m条"execute as @e run summon armor_stand ~ ~ ~"加入了执行列表。处理执行列表时，一边处理前面的m条"execute as @e run summon armor_stand ~ ~ ~"，一边在执行列表后面追加新的summon命令，每条"execute as @e run summon armor_stand ~ ~ ~"都会追加m条summon命令，总共有m条，因此最后依然会有m^2条summon命令，最后会有m^2+m个盔甲架。
+首先根据实时解析与预解析的理论，第一层execute as @e run把x条"execute as @e run summon armor_stand ~ ~ ~"加入了执行列表。处理执行列表时，一边处理前面的x条"execute as @e run summon armor_stand ~ ~ ~"，一边在执行列表后面追加新的summon命令，每条"execute as @e run summon armor_stand ~ ~ ~"都会追加x条summon命令，总共有x条，因此依然会有x^2条summon命令，最后会有x^2+x个盔甲架。
+
+```mermaid
+graph TB
+subgraph "execute"
+G("execute as @e run execute as @e run summon armor_stand ~ ~ ~")
+end
+subgraph list
+A("execute as @e run summon armor_stand ~ ~ ~")
+B("execute as @e run summon armor_stand ~ ~ ~")
+C("summon armor_stand ~ ~ ~")
+D("summon armor_stand ~ ~ ~")
+E("summon armor_stand ~ ~ ~")
+F("summon armor_stand ~ ~ ~")
+end
+G-->A
+G-->B
+A-->C
+A-->D
+B-->E
+B-->F
+```
+
+#例3
+
+```
+#test1
+execute as @e run function #test2
+
+#test2
+execute as @e run summon armor_stand ~ ~ ~
+```
+
+首先根据实时解析与预解析理论，#test1函数分发了x条function #test2命令。而function具有一个特性是：内部全部命令结束后整个function命令才会结束。因此，第二条execute as @e run summon armor_stand ~ ~ ~开始执行时，第一条execute as @e run summon armor_stand ~ ~ ~已经全部执行结束，第二条接收了第一条已经生成的盔甲架作为输入，会生成更多的盔甲架，这是与#例2不同的地方。function的结束特性，使得我们可以把function看作一个个独立的功能，例如test2抽象为“把盔甲架数量翻倍”。在这里，x个盔甲架，运行了x次“把盔甲架数量翻倍”，因此最后会得到x*2^x个盔甲架。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function的"独立功能”特性，可以使以上逻辑在n个test函数中依然成立。我们把$f^{(n)}(x)$作为 $ f(f(f(...f(x))))这里有n个f的表示，那么在n层function+execute嵌套后实体的数量可以表示为:
+
+$$
+f_{n}(x) =
+\begin{cases} 
+2x,\,\,n=1\\
+f^{(x)}_{n-1}(x),\,\,n> 1\\
+\end{cases}
+$$
 
 ### 分支
 
