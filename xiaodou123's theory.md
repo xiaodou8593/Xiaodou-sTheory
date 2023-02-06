@@ -1091,8 +1091,8 @@ execute as @e run summon armor_stand ~ ~ ~
 $$
 f_{n}(x) =
 \begin{cases} 
-2x,\,\,n=1\\
-f^{(x)}_{n-1}(x),\,\,n> 1\\
+2x,\ \ n=1\\
+f^{(x)}_{n-1}(x),\ \ n> 1\\
 \end{cases}
 $$
 
