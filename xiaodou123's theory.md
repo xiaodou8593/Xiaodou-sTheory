@@ -33,7 +33,6 @@
 <!-- /TOC -->
 
 # 前言
-<a id="markdown-%E5%89%8D%E8%A8%80" name="%E5%89%8D%E8%A8%80"></a>
 
 一.我为什么要写这本书？
 
@@ -82,13 +81,10 @@ flowchart LR
 ```
 
 # 命令与函数
-<a id="markdown-%E5%91%BD%E4%BB%A4%E4%B8%8E%E5%87%BD%E6%95%B0" name="%E5%91%BD%E4%BB%A4%E4%B8%8E%E5%87%BD%E6%95%B0"></a>
 
 ## 一切还要从函数说起
-<a id="markdown-%E4%B8%80%E5%88%87%E8%BF%98%E8%A6%81%E4%BB%8E%E5%87%BD%E6%95%B0%E8%AF%B4%E8%B5%B7" name="%E4%B8%80%E5%88%87%E8%BF%98%E8%A6%81%E4%BB%8E%E5%87%BD%E6%95%B0%E8%AF%B4%E8%B5%B7"></a>
 
 ### 什么是函数
-<a id="markdown-%E4%BB%80%E4%B9%88%E6%98%AF%E5%87%BD%E6%95%B0" name="%E4%BB%80%E4%B9%88%E6%98%AF%E5%87%BD%E6%95%B0"></a>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;什么是函数呢？我们在不同的领域可能听过许多不同的定义。在数学中，函数的传统定义是这样的：
 
@@ -123,7 +119,6 @@ B --> C((3))
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如上图所示，f(x)这台机器也就是中间的黑盒子了。由此可见，**函数具备三个最基本的要素：输入、输出、处理。**
 
 ### 命令也是一种函数
-<a id="markdown-%E5%91%BD%E4%BB%A4%E4%B9%9F%E6%98%AF%E4%B8%80%E7%A7%8D%E5%87%BD%E6%95%B0" name="%E5%91%BD%E4%BB%A4%E4%B9%9F%E6%98%AF%E4%B8%80%E7%A7%8D%E5%87%BD%E6%95%B0"></a>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;命令也是一种函数。为什么这么说呢？我们把命令执行前的整个mc世界看作是命令的输入(包括随机种子等所有因素在内)，那么命令就会有确定的运行规则，最后得到一个确定的命令执行后的mc世界的状态。
 
@@ -191,13 +186,10 @@ f2-->B((res))
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;因此可以说，命令函数不仅具备函数的基本要素，**命令函数之间还可以通过一定的组织方式复合为新的函数。** 我们将在本章<命令函数的组织方式>部分进行详细介绍。
 
 ## 命令函数的基本要素
-<a id="markdown-%E5%91%BD%E4%BB%A4%E5%87%BD%E6%95%B0%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%A6%81%E7%B4%A0" name="%E5%91%BD%E4%BB%A4%E5%87%BD%E6%95%B0%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%A6%81%E7%B4%A0"></a>
 
 ### 输入输出
-<a id="markdown-%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA" name="%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA"></a>
 
 #### 执行方式：天然的命令输入
-<a id="markdown-%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F%EF%BC%9A%E5%A4%A9%E7%84%B6%E7%9A%84%E5%91%BD%E4%BB%A4%E8%BE%93%E5%85%A5" name="%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F%EF%BC%9A%E5%A4%A9%E7%84%B6%E7%9A%84%E5%91%BD%E4%BB%A4%E8%BE%93%E5%85%A5"></a>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;执行方式，又称执行环境，是一系列命令运行过程中使用的参数的总称，包括维度、坐标、朝向、执行者、高度h五个。每条命令都具有自己的执行方式，因此执行方式具有局部性。如果未经过execute改变执行方式，那么子命令的执行方式与父命令的执行方式保持一致，因此执行方式具有继承性。
 
@@ -268,7 +260,6 @@ rotated把执行朝向累加到(0.0f,91.0f)后，facing ^ ^ ^1会把执
 由于以上三点局限性，我们有必要维护更加高级的命令输入输出形式。
 
 #### 人工维护的输入输出
-<a id="markdown-%E4%BA%BA%E5%B7%A5%E7%BB%B4%E6%8A%A4%E7%9A%84%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA" name="%E4%BA%BA%E5%B7%A5%E7%BB%B4%E6%8A%A4%E7%9A%84%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA"></a>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;本节介绍人工维护的输入输出。人工维护的输入输出，通常有以下几种形式：记分板、storage、实体。我们在本节对这三种形式的维护方法进行一一讲解。
 
@@ -370,7 +361,6 @@ function entity:_kill_each_other
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总结：人工维护的输入输出是更加高级的输入输出形式，能够自由地表达任意数量任意结构的数值和数据，甚至是对象。但本节所讲的人工维护的输入输出有最大的一点局限性：它们都是全局的，不具备执行方式那样的局部性。那么，有没有什么方法克服这段局限性，实现具有局部性的人工数据形式呢？我们将在<命令函数的组织方式>中的<顺序>和<广义递归>部分进行讲解。
 
 #### 输入输出部分的总结
-<a id="markdown-%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E9%83%A8%E5%88%86%E7%9A%84%E6%80%BB%E7%BB%93" name="%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E9%83%A8%E5%88%86%E7%9A%84%E6%80%BB%E7%BB%93"></a>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在本章节的第二部分，我们重点介绍了两类自定义数据的输入输出形式，它们在数值运算与数据处理中最为常见，也是最灵活的形式，能够自由地表达不同的事物。但是我们应该认识到，在命令中，输入输出的概念实际上要更为广阔。广义来讲，所有的“检测”类问题都是命令的输入，它们把mc世界中繁杂的元素转化成易于我们处理的形式（也就是本部分讲到的形式）；所有的“功能”类问题都是命令的输出，它们把我们处理后的形式转化为mc世界中可以被玩家看到或者听到的各种元素。这里可以对常见的广义输入输出问题进行一下列举（这里只是可以大致看一下命令的管辖范围，而不是要每一项讲解）。而探索mc世界输入输出的边界，利用它们制作精彩的作品就是读者的任务了！
 
@@ -425,7 +415,6 @@ function entity:_kill_each_other
 * 粒子声音
 
 ### 命令处理
-<a id="markdown-%E5%91%BD%E4%BB%A4%E5%A4%84%E7%90%86" name="%E5%91%BD%E4%BB%A4%E5%A4%84%E7%90%86"></a>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;本节我们介绍命令中最基本的处理方式。“临时”是命令处理的核心思想。在命令中，同一类型的数据可能会存在许多不同的形式，其中一些形式是用于储存而非运算的，而另外一些形式是便于我们运算的。例如对于坐标这种类型的数据，它的形式可能是实体的Pos标签，可能是执行方式中的执行坐标，也可能是以记分板表示的小数。
 
@@ -448,7 +437,6 @@ state2--"o1"-->D((form3))
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;由此，我们可以引出本节最为重要的两个概念：形式转换网与临时对象。i0、i1、o0、o1函数以及它们连接的数据形式形成的网络称为形式转换网。数据state0、state1、state2与状态转移函数f0、f1的有机组合称为临时对象。也就是说，**临时对象是易于处理的运算形式**，而**形式转换网是将其它形式与临时对象形式进行相互转化的转换函数网络**。
 
 #### 临时对象
-<a id="markdown-%E4%B8%B4%E6%97%B6%E5%AF%B9%E8%B1%A1" name="%E4%B8%B4%E6%97%B6%E5%AF%B9%E8%B1%A1"></a>
 
 分类：
 
@@ -747,7 +735,6 @@ scoreboard players operation 3vec_l int += stemp0 int
 如果是初学命令的读者，不必被上面复杂的运算吓到。这里，我们仅仅是提供一个例子来展现属性扩展的思想，不必关注其中复杂的处理细节。这些复杂的运算处理，我们将在章节<数值运算基础>与章节<数理计算>中深入讲解。
 
 #### 形式转换网
-<a id="markdown-%E5%BD%A2%E5%BC%8F%E8%BD%AC%E6%8D%A2%E7%BD%91" name="%E5%BD%A2%E5%BC%8F%E8%BD%AC%E6%8D%A2%E7%BD%91"></a>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;转换函数是形式转换网的骨架。在同一个类型的形式转换网络中，假设有n种形式，那么理论上完整的形式转换网应该包括n*(n-1)个转换函数，即每种形式都有到其它形式的直达路径。
 
@@ -795,7 +782,6 @@ execute store result score 3vec_z int run data get entity @s Pos[2] 1000
 ```
 
 #### 命令处理部分的总结
-<a id="markdown-%E5%91%BD%E4%BB%A4%E5%A4%84%E7%90%86%E9%83%A8%E5%88%86%E7%9A%84%E6%80%BB%E7%BB%93" name="%E5%91%BD%E4%BB%A4%E5%A4%84%E7%90%86%E9%83%A8%E5%88%86%E7%9A%84%E6%80%BB%E7%BB%93"></a>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在本章的第三部分，我们讲解了命令处理的两个基本概念：临时对象与形式转换网。由此，我们可以得到命令处理的基本方法：首先将处理的类型进行形式表示与划分；然后找到容易运算的形式作为临时对象，根据临时对象的分类去编写相应的处理函数；最后构造形式转换网，完成临时对象与其它表示形式的转换。
 
@@ -807,7 +793,6 @@ execute store result score 3vec_z int run data get entity @s Pos[2] 1000
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;除了基本的命令处理方法以外，本书还会深入讲解在命令中最灵活最常用的两种处理：数值运算与数据处理，分别在章节<数值运算基础>与<数据处理基础>。
 
 ## 命令函数的组织方式
-<a id="markdown-%E5%91%BD%E4%BB%A4%E5%87%BD%E6%95%B0%E7%9A%84%E7%BB%84%E7%BB%87%E6%96%B9%E5%BC%8F" name="%E5%91%BD%E4%BB%A4%E5%87%BD%E6%95%B0%E7%9A%84%E7%BB%84%E7%BB%87%E6%96%B9%E5%BC%8F"></a>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在学习了命令函数的基本要素之后，我们可以自己构造一个一个独立的函数。但是想要让这些独立的函数按照我们预期的方式组织起来，组成新的复合函数，我们还需要学习命令函数的组织方式。
 
@@ -816,12 +801,10 @@ execute store result score 3vec_z int run data get entity @s Pos[2] 1000
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在mc命令中选择合适的元素，构造以上四种组织方式的框架，是本章第三部分的任务。同时，对于第二部分中命令的基本要素，把它们组织在一起后，可能会出现冲突的现象。探究这些冲突何时会发生，以及如何维护来避免冲突的发生，也是第三部分的重要任务。
 
 ### 顺序
-<a id="markdown-%E9%A1%BA%E5%BA%8F" name="%E9%A1%BA%E5%BA%8F"></a>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;顺序是命令函数最常见的组织方式，例如：所有的单条命令都是依次执行的。单条命令总是在一条执行完之后再执行另一条，不存在“同时”的概念(单线程)。因此，命令函数总是依照某种顺序来执行。我们通常使用function与execute遍历两种方法来构造命令函数顺序。
 
 #### function构造
-<a id="markdown-function%E6%9E%84%E9%80%A0" name="function%E6%9E%84%E9%80%A0"></a>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在mcfunction文件中，按行依次写下函数f0,f1,f2......fn，运行这个function，将会依次执行f0,f1,f2......fn。设一个自然数i，i<n。函数fi+1总是在fi运行完后再运行，且两个函数之间不可能会有其它函数运行。我们称这种顺序为依次执行，模型图如下：
 
@@ -956,7 +939,6 @@ end
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s命名法中的"越级上报"现象：高层函数可以直接调用更底层函数，不会引起冲突(例如0级函数调用2级函数)。底层函数可以直接拿取高层函数的数据作为输入，不会因此冲突(例如2级函数可以直接获取玩家数据，而玩家数据属于用户层的0级环境)。
 
 #### execute构造
-<a id="markdown-execute%E6%9E%84%E9%80%A0" name="execute%E6%9E%84%E9%80%A0"></a>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;使用execute遍历是另外一种构造命令函数顺序的方法。例如世界上有5个实体，ABCDE(这里默认为选择器未指定sort参数时的实体加载顺序，例如先summon A，那么A会第一个被选择)，使用命令`execute as @e run say hi`可以遍历这5个实体，让它们分别输出hi。那么execute的顺序只是依次执行A say hi , B say hi，C say hi，D say hi，E say hi吗？为了更加深入地理解一条execute的处理顺序，让我们来实现<输入输出部分>例子中引用到的entity:_kill_each_other函数。
 
@@ -1119,35 +1101,24 @@ f^{(x)}_{n-1}(x)&,\ \ n> 1\\
 $$
 
 ### 分支
-<a id="markdown-%E5%88%86%E6%94%AF" name="%E5%88%86%E6%94%AF"></a>
 
 ### 递归
-<a id="markdown-%E9%80%92%E5%BD%92" name="%E9%80%92%E5%BD%92"></a>
 
 #### 尾递归(循环)
-<a id="markdown-%E5%B0%BE%E9%80%92%E5%BD%92%E5%BE%AA%E7%8E%AF" name="%E5%B0%BE%E9%80%92%E5%BD%92%E5%BE%AA%E7%8E%AF"></a>
 
 #### 广义递归
-<a id="markdown-%E5%B9%BF%E4%B9%89%E9%80%92%E5%BD%92" name="%E5%B9%BF%E4%B9%89%E9%80%92%E5%BD%92"></a>
 
 ### 回调
-<a id="markdown-%E5%9B%9E%E8%B0%83" name="%E5%9B%9E%E8%B0%83"></a>
 
 # 常用调试技巧
-<a id="markdown-%E5%B8%B8%E7%94%A8%E8%B0%83%E8%AF%95%E6%8A%80%E5%B7%A7" name="%E5%B8%B8%E7%94%A8%E8%B0%83%E8%AF%95%E6%8A%80%E5%B7%A7"></a>
 
 # 数值运算基础
-<a id="markdown-%E6%95%B0%E5%80%BC%E8%BF%90%E7%AE%97%E5%9F%BA%E7%A1%80" name="%E6%95%B0%E5%80%BC%E8%BF%90%E7%AE%97%E5%9F%BA%E7%A1%80"></a>
 
 # 数理计算
-<a id="markdown-%E6%95%B0%E7%90%86%E8%AE%A1%E7%AE%97" name="%E6%95%B0%E7%90%86%E8%AE%A1%E7%AE%97"></a>
 
 # 数据处理基础
-<a id="markdown-%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E5%9F%BA%E7%A1%80" name="%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E5%9F%BA%E7%A1%80"></a>
 
 # 数据结构
-<a id="markdown-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84" name="%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"></a>
 
 # 系统架构设计与优化
-<a id="markdown-%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E4%BC%98%E5%8C%96" name="%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E4%BC%98%E5%8C%96"></a>
 
