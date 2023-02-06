@@ -1086,7 +1086,7 @@ execute as @e run summon armor_stand ~ ~ ~
 
 首先根据实时解析与预解析理论，#test1函数分发了x条function #test2命令。而function具有一个特性是：内部全部命令结束后整个function命令才会结束。因此，第二条execute as @e run summon armor_stand ~ ~ ~开始执行时，第一条execute as @e run summon armor_stand ~ ~ ~已经全部执行结束，第二条接收了第一条已经生成的盔甲架作为输入，会生成更多的盔甲架，这是与#例2不同的地方。function的结束特性，使得我们可以把function看作一个个独立的功能，例如test2抽象为“把盔甲架数量翻倍”。在这里，x个盔甲架，运行了x次“把盔甲架数量翻倍”，因此最后会得到x*2^x个盔甲架。
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function的"独立功能”特性，可以使以上逻辑在n个test函数中依然成立。我们把$f^{(n)}(x)$作为 $ f(f(f(...f(x))))这里有n个f的表示，那么在n层function+execute嵌套后实体的数量可以表示为:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function的"独立功能”特性，可以使以上逻辑在n个test函数中依然成立。我们把 $f^{(n)}(x)$ 作为 $f(f(f(...f(x))))$ 这里有n个f的表示，那么在n层function+execute嵌套后实体的数量可以表示为:
 
 $$
 f_{n}(x) =
