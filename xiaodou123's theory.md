@@ -9,18 +9,18 @@
     - [输入输出](#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA)
       - [执行方式：天然的命令输入](#%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F%E5%A4%A9%E7%84%B6%E7%9A%84%E5%91%BD%E4%BB%A4%E8%BE%93%E5%85%A5)
       - [人工维护的输入输出](#%E4%BA%BA%E5%B7%A5%E7%BB%B4%E6%8A%A4%E7%9A%84%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA)
-      - [输入输出部分的总结](#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E9%83%A8%E5%88%86%E7%9A%84%E6%80%BB%E7%BB%93)
     - [命令处理](#%E5%91%BD%E4%BB%A4%E5%A4%84%E7%90%86)
       - [临时对象](#%E4%B8%B4%E6%97%B6%E5%AF%B9%E8%B1%A1)
       - [形式转换网](#%E5%BD%A2%E5%BC%8F%E8%BD%AC%E6%8D%A2%E7%BD%91)
-      - [命令处理部分的总结](#%E5%91%BD%E4%BB%A4%E5%A4%84%E7%90%86%E9%83%A8%E5%88%86%E7%9A%84%E6%80%BB%E7%BB%93)
   - [命令函数的组织方式](#%E5%91%BD%E4%BB%A4%E5%87%BD%E6%95%B0%E7%9A%84%E7%BB%84%E7%BB%87%E6%96%B9%E5%BC%8F)
     - [顺序](#%E9%A1%BA%E5%BA%8F)
       - [function构造](#function%E6%9E%84%E9%80%A0)
       - [execute构造](#execute%E6%9E%84%E9%80%A0)
     - [分支](#%E5%88%86%E6%94%AF)
+      - [简单分支](#%E7%AE%80%E5%8D%95%E5%88%86%E6%94%AF)
+      - [记分板树](#%E8%AE%B0%E5%88%86%E6%9D%BF%E6%A0%91)
     - [递归](#%E9%80%92%E5%BD%92)
-      - [尾递归循环](#%E5%B0%BE%E9%80%92%E5%BD%92%E5%BE%AA%E7%8E%AF)
+      - [尾递归(循环)](#%E5%B0%BE%E9%80%92%E5%BD%92%E5%BE%AA%E7%8E%AF)
       - [广义递归](#%E5%B9%BF%E4%B9%89%E9%80%92%E5%BD%92)
     - [回调](#%E5%9B%9E%E8%B0%83)
 - [常用调试技巧](#%E5%B8%B8%E7%94%A8%E8%B0%83%E8%AF%95%E6%8A%80%E5%B7%A7)
@@ -367,7 +367,7 @@ function entity:_kill_each_other
 检测类问题：
 
 * 玩家按键操作
-  
+
   * WASD、空格、shift
   * FQ左右键，按住右键
   * 指定槽位/手持指定物品
@@ -378,36 +378,36 @@ function entity:_kill_each_other
   * 与容器内物品交互
   * 输入文字
 * 方块地形状况
-  
+
   * 穷举进行if block探测
   * 插箭法在inBlockState中获得方块信息
   * 战利品表法获得方块id
   * data get获得方块实体的nbt信息
 * 生物实体行为
-  
+
   * 在指定空间区域
   * 当前属性状态
 
 功能类问题：
 
 * 实体控制
-  
+
   * 移动传送
   * 血量控制
   * 修改状态属性
   * AI控制
 * 放置方块
-  
+
   * 穷举setblock
   * 使用fill/clone/结构
   * 掉落沙生成法
 * 修改物品
-  
+
   * 穷举修改
   * 临时物品法
   * 潜影盒法
 * 显示文本
-  
+
   * 书本、tellraw、title、actionbar、bossbar
   * sidebar
   * 告示牌、CustomName
@@ -790,7 +790,7 @@ execute store result score 3vec_z int run data get entity @s Pos[2] 1000
 1. 临时对象的选取不定。例如：对点进行数值运算时，临时分数无疑是最佳的运算形式，那么此时我们应该选择临时分数形式作为临时对象；但在对点进行空间几何运算时，`~ ~ ~`与Pos通过facing和tp的运算可能会发挥巨大的威力，那么此时我们应选择这两种形式作为临时对象。对这三种形式的灵活运用将贯彻整个<数理计算>章节。
 2. 形式转换函数未必以函数文件的形式存在，也可能是以一段命令的形式存在于某个函数之中(复合函数的理论)。例如，在本部分<临时对象>一节中，对临时分数处理浮点数的讲解中的例1，<temp,int>这个临时分数是临时对象，而对nbt输入输出的data get和execute store本质上也是一种形式转换网。
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;除了基本的命令处理方法以外，本书还会深入讲解在命令中最灵活最常用的两种处理：数值运算与数据处理，分别在章节<数值运算基础>与<数据处理基础>。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;除了基本的命令处理方法以外，本书还会深入讲解在命令中最灵活常用的两种处理：数值运算与数据处理，分别在章节<数值运算基础>与<数据处理基础>。
 
 ## 命令函数的组织方式
 
@@ -813,7 +813,7 @@ graph TB
 A(func0)-->B(func1)-->C[......]-->D(funcn)
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果funci是一段命令，我们可以把它重新划分成不同的函数部分，或是放进一个mcfunction文件进行重组，或是相反，把许多不同的部分合并成一段，都不改变整体函数的处理，与原函数等价。另外，给两段函数funca和funcb，如果funca的输出与funb的输入无关，funb的输出与funca的输入无关，那么它们还可以交换顺序，改变顺序后整体函数也与原函数等价。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果funci是一段命令，我们可以把它重新划分成不同的部分，或是放进多个连续mcfunction文件进行重组，或是把许多连续的不同部分合并成一段，都不改变处理规则，整体函数与原函数等价。另外，给两段函数funca和funcb，如果funca的输出与funcb的输入无关，funcb的输出也与funca的输入无关，那么它们还可以交换顺序，改变顺序后整体函数也与原函数等价。
 
 #例：
 
@@ -857,9 +857,9 @@ scoreboard players operation tempd int += tempy int
 scoreboard players operation tempd int += tempz int
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;由此可以看出，我们需要根据命令段的前后逻辑，合理地调整和重组依次执行的顺序，在合适的地方加上空行，使命令段有更好的可读性。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;可以看出，我们需要根据命令段的前后逻辑，合理地重组依次执行顺序，在合适的地方加上空行，使命令段具有更好的可读性。
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;现在我们来探讨输入输出与临时对象在依次执行中的兼容性问题。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;现在我们来探讨输入输出和临时对象在依次执行中的兼容性问题。
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对于执行方式表示的输入，由于执行方式具有局部性，每条命令都有属于自己的执行方式，冲突不会发生，完全兼容。
 
@@ -1098,6 +1098,7 @@ f_{n}(x) =
 2x&,\ \ n=1\\
 f^{(x)}_{n-1}(x)&,\ \ n> 1\\
 \end{cases}
+
 $$
 
 ### 分支
@@ -1131,4 +1132,3 @@ $$
 # 数据结构
 
 # 系统架构设计与优化
-
