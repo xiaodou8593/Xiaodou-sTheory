@@ -367,7 +367,7 @@ function entity:_kill_each_other
 检测类问题：
 
 * 玩家按键操作
-
+  
   * WASD、空格、shift
   * FQ左右键，按住右键
   * 指定槽位/手持指定物品
@@ -378,36 +378,36 @@ function entity:_kill_each_other
   * 与容器内物品交互
   * 输入文字
 * 方块地形状况
-
+  
   * 穷举进行if block探测
   * 插箭法在inBlockState中获得方块信息
   * 战利品表法获得方块id
   * data get获得方块实体的nbt信息
 * 生物实体行为
-
+  
   * 在指定空间区域
   * 当前属性状态
 
 功能类问题：
 
 * 实体控制
-
+  
   * 移动传送
   * 血量控制
   * 修改状态属性
   * AI控制
 * 放置方块
-
+  
   * 穷举setblock
   * 使用fill/clone/结构
   * 掉落沙生成法
 * 修改物品
-
+  
   * 穷举修改
   * 临时物品法
   * 潜影盒法
 * 显示文本
-
+  
   * 书本、tellraw、title、actionbar、bossbar
   * sidebar
   * 告示牌、CustomName
@@ -1098,7 +1098,6 @@ f_{n}(x) =
 2x&,\ \ n=1\\
 f^{(x)}_{n-1}(x)&,\ \ n> 1\\
 \end{cases}
-
 $$
 
 ### 分支
@@ -1110,6 +1109,63 @@ $$
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果分支较多，我们的实现方法是记分板树。对一棵纯的记分板树，我们关注它的开销问题，因此引入分支因子x并探究x的最佳取值。对一棵其它类型参数的记分板树，我们要找到这种类型转化为分数的转换函数。
 
 #### 简单分支
+
+前后无关性：
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;前后无关性是分支结构的重要特性。由于在mcfunction中，我们用依次执行execute if/unless的方式来构造简单分支，如下图：
+
+```mermaid
+graph LR
+A("execute if p0 run")-->B("func0")
+C("execute if p1 run")-->D("func1")
+E("execute if p2 run")-->F("func2")
+```
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果条件p0返回成功，首先执行func0，再去判断条件p1，p2。这意味着，条件判定与命令执行之间的关系是实时解析的。但在我们预期的分支模型中，条件判定相对于命令执行是预解析的，即先判断所有的条件，再选择一个路口继续执行。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;二者的不同发生在命令的运行效果会改变条件的判定结果时，也即前后发生了关联。
+
+#例：金币多的队伍获胜并结束游戏。
+
+```
+#coin_judge
+execute if score red_coin int > blue_coin int run function #red_win
+execute if score red_coin int = blue_coin int run function #score_draw
+execute if score red_coin int < blue_coin int run function #blue_win
+
+#end_game
+scoreboard players set red_coin int 0
+scoreboard players set blue_coin int 0
+#else operations
+```
+
+在coin_judge函数中，逻辑看似十分正确，金币多的队伍获胜，如果金币一样就判定为平局。但是red_win、score_draw、blue_draw都会调用结束游戏的函数end_game，其中包括重置金币数的操作。也就是说命令执行的结果反过来影响了条件判定，发生了前后关联。那么如果红队的金币比较多，将会看到红队获胜与平局都会发生，十分诡异。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;因此，为了保证简单分支的正常运行，维护它的前后无关性是十分重要的。我们通常有三种维护方法：
+
+1.直接维护：删除反作用于条件的操作。上述获胜判定一例中，金币数量的重置操作完全可以放到游戏开始而不是游戏结束。
+
+2.重组顺序：如果条件i执行的操作会影响到条件j，我们就先判定条件j后判定条件i。上述获胜判定一例中，我们只需要调整coin_judge函数的判定顺序就可以避开前后关联：
+
+```
+#coin_judge
+execute if score red_coin int = blue_coin int run function #score_draw
+execute if score red_coin int > blue_coin int run function #red_win
+execute if score red_coin int < blue_coin int run function #blue_win
+```
+
+3.转移数据：把判定条件的数据先转移到一个临时对象，条件改为判定临时对象，那么反作用不会涉及临时对象。上述获胜判定一例，我们可以把coin_judge修改为：
+
+```
+#coin_judge
+scoreboard players operation temp int = red_coin int
+scoreboard players operation temp int -= blue_coin int
+execute if score temp int matches 1.. run function #red_win
+execute if score temp int matches 0 run function #score_draw
+execute if score temp int matches ..-1 run function #blue_win
+```
+
+当然，为了维护临时对象temp的兼容性，这里与顺序中<嵌套执行>同理，需要遵循s命名法。
 
 #### 记分板树
 
@@ -1132,3 +1188,4 @@ $$
 # 数据结构
 
 # 系统架构设计与优化
+
