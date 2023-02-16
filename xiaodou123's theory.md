@@ -1167,6 +1167,41 @@ execute if score temp int matches ..-1 run function #blue_win
 
 当然，为了维护临时对象temp的兼容性，这里与顺序中<嵌套执行>同理，需要遵循s命名法。
 
+顺序化分支：
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;分支会带来函数的嵌套。函数嵌套不仅会让函数文件变多，导致前后文逻辑不连贯，还会带来上面所说的前后关联陷阱。嵌套的兼容性需要使用s命名法来维护，十分不方便。总的来说，嵌套较多的命令是丑陋的，可维护性差的。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;简单分支的函数嵌套有时是可以被化解的。这种化解方法我们称之为顺序化。顺序化的基本思想是“以不变应万变”。对于不同的分支，我们找到它们相同的部分，汇聚在一起处理。根据不变部分的处理的前后，顺序化处理可以分为两种：不变在前、不变在后。以下几个例子可以演示顺序化处理的两种方法：
+
+#例1：过大门，警察要有警察证，医生要有医生证，农民要有农民证，工人要有工人证，有证可以过，没证不让过。
+
+```
+#gate_access
+execute if score inp int matches 1 if entity @s[tag=license_1] run scoreboard players set res int 1
+execute if score inp int matches 1 if entity @s[tag=!license_1] run scoreboard players set res int 0
+execute if score inp int matches 2 if entity @s[tag=license_2] run scoreboard players set res int 1
+execute if score inp int matches 2 if entity @s[tag=!license_2] run scoreboard players set res int 0
+execute if score inp int matches 3 if entity @s[tag=license_3] run scoreboard players set res int 1
+execute if score inp int matches 3 if entity @s[tag=!license_3] run scoreboard players set res int 0
+execute if score inp int matches 4 if entity @s[tag=license_4] run scoreboard players set res int 1
+execute if score inp int matches 4 if entity @s[tag=!license_4] run scoreboard players set res int 0
+```
+
+可以看到，写了一坨if，非常丑陋。经过“不变在前”的顺序化优化后：
+
+```
+#gate_access
+scoreboard players set res int 0
+execute if score inp int matches 1 if entity @s[tag=license_1] run scoreboard players set res int 1
+execute if score inp int matches 2 if entity @s[tag=license_2] run scoreboard players set res int 1
+execute if score inp int matches 3 if entity @s[tag=license_3] run scoreboard players set res int 1
+execute if score inp int matches 4 if entity @s[tag=license_4] run scoreboard players set res int 1
+```
+
+不变在前的顺序化其实是提供了一种“默认值”的功能。凡是结果为默认值的条件都不需要再判断了。
+
+#例2：
+
 #### 记分板树
 
 ### 递归
