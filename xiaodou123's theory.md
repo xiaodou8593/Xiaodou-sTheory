@@ -1235,6 +1235,7 @@ data remove storage math:io loot_list[0]
 ```
 
 采用一般的简单分支，额外开了两个函数，指令十分臃肿。
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;更加令人恼火的是，这里踩中了简单分支的前后关联陷阱：如果奖池里只剩一项奖品，抽出这个奖品后将会立即刷新奖池并抽出另一个奖品，这不符合我们一次只抽一个奖品的需要。
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;不过，我们使用“不变在后”的顺序化处理后，就可以让这个分支得到很简洁的优化了：
@@ -1310,7 +1311,6 @@ execute if score res int 0 if <conditioni> run scoreboard players set res int 1
 该方法的兼容性与<嵌套执行>相同，需要s命名。
 
 #### 记分板树
-
 
 ### 递归
 
