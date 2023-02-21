@@ -1173,7 +1173,16 @@ execute if score temp int matches ..-1 run function #blue_win
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;简单分支的函数嵌套有时是可以被化解的。这种化解方法我们称之为顺序化。顺序化的基本思想是“以不变应万变”。对于不同的分支，我们找到它们相同的部分，汇聚在一起处理。根据不变部分的处理的前后，顺序化处理可以分为两种：不变在前、不变在后。以下几个例子可以演示顺序化处理的两种方法：
 
-#例1：过大门，警察要有警察证，医生要有医生证，农民要有农民证，工人要有工人证，有证可以过，没证不让过。
+#例1：出门买一个西瓜，看见卖包子的就买两个。
+
+```
+#test_buy
+scoreboard players set buy_count int 1
+execute if entity @e[tag=ssbun_trader] run scoreboard players set buy_count int 2
+execute as @e[tag=wmelon_trader,limit=1] run function trader:_buy
+```
+
+#例2：过大门，警察要有警察证，医生要有医生证，农民要有农民证，工人要有工人证，有证可以过，没证不让过。
 
 ```
 #gate_access
@@ -1200,9 +1209,108 @@ execute if score inp int matches 4 if entity @s[tag=license_4] run scoreboard pl
 
 不变在前的顺序化其实是提供了一种“默认值”的功能。凡是结果为默认值的条件都不需要再判断了。
 
-#例2：
+#例3：如果奖池里有奖品，就从奖池里抽一个奖品。如果奖池里没奖品，就刷新奖池，再从奖池里抽一个奖品。
+
+```
+#test_loot
+execute if data storage math:io loot_list[0] run function #test_loop0
+execute unless data storage math:io loot_list[0] run function #test_loot1
+
+#test_loot0
+summon item ~ ~ ~ {Item:{id:"minecraft:glass",Count:1b},Tags:["tmp"]}
+data modify entity @e[tag=tmp,limit=1] Item set from storage math:io loot_list[0]
+tag @e remove tmp
+data remove storage math:io loot_list[0]
+
+#test_loot1
+#math:class loot_list为奖池的数据模板。
+data modify storage math:io list set from storage math:class loot_list
+#_shuffle是列表的洗牌算法。我们将在章节<数据处理基础>中实现它。
+function math:list/_shuffle
+data modify storage math:io loot_list set from storage math:io list
+summon item ~ ~ ~ {Item:{id:"minecraft:glass",Count:1b},Tags:["tmp"]}
+data modify entity @e[tag=tmp,limit=1] Item set from storage math:io loot_list[0]
+tag @e remove tmp
+data remove storage math:io loot_list[0]
+```
+
+采用一般的简单分支，额外开了两个函数，指令十分臃肿。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;更加令人恼火的是，这里踩中了简单分支的前后关联陷阱：如果奖池里只剩一项奖品，抽出这个奖品后将会立即刷新奖池并抽出另一个奖品，这不符合我们一次只抽一个奖品的需要。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;不过，我们使用“不变在后”的顺序化处理后，就可以让这个分支得到很简洁的优化了：
+
+```
+#test_loot
+#如果奖池没奖品就刷新，保证奖池有奖品。
+execute unless data storage math:io loot_list[0] run function #loot_refresh
+#生成奖品
+summon item ~ ~ ~ {Item:{id:"minecraft:glass",Count:1b},Tags:["tmp"]}
+data modify entity @e[tag=tmp,limit=1] Item set from storage math:io loot_list[0]
+tag @e remove tmp
+data remove storage math:io loot_list[0]
+
+#loot_refresh
+data modify storage math:io list set from storage math:class loot_list
+function math:list/_shuffle
+data modify storage math:io loot_list set from storage math:io list
+```
+
+与或非逻辑：
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;简单分支的构造离不开条件，有时我们需要实现条件的逻辑运算。我们来实现三种常见的逻辑运算：与或非，并讨论它们的兼容性。
+
+非：
+
+1.if/unless互相改写。一般情况下，条件在execute的if/unless互为非，不过这也是有例外的。例如if score与unless score，如果记分板不存在，二者都返回0；if block与unless block，如果判断坐标在虚空，二者都返回0。
+
+if/unless与执行方式一样，具有完美的兼容性。
+
+2.记分板取反。我们使用记分板的0/1值表示真假，只需要对它进行加1模2的操作就能取反。
+
+```
+#not_implement
+execute store success score res int if <condition>
+scoreboard players add res int 1
+scoreboard players operation res int %= 2 int
+```
+
+```
+#not_implement
+execute store success score res int if <condition>
+execute store success score res int if score res int matches 0
+```
+
+记分板方法的兼容性与<嵌套执行>相同，需要s命名。
+
+或：
+
+我们使用一个顺序化分支来实现或逻辑。或的默认值是0，每个条件都只能把或的结果置1。
+
+```
+scoreboard players set res int 0
+execute if <condition0> run scoreboard players set res int 1
+execute if <condition1> run scoreboard players set res int 1
+#......
+execute if <conditioni> run scoreboard players set res int 1
+```
+
+我们还可以利用短路原理对或逻辑进行开销优化。短路原理利用之前判断的结果，如果结果已经被置1，则后面无需判断。
+
+```
+scoreboard players set res int 0
+execute if <condition0> run scoreboard players set res int 1
+execute if score res int 0 if <condition1> run scoreboard players set res int 1
+execute if score res int 0 if <condition2> run scoreboard players set res int 1
+#......
+execute if score res int 0 if <conditioni> run scoreboard players set res int 1
+```
+
+短路原理能够优化的前提是：\<conditioni\>的开销较大，比if score的开销大的多，那么使用if score进行提前截断才有优化价值。否则会适得其反，徒增if score开销。
+
+该方法的兼容性与<嵌套执行>相同，需要s命名。
 
 #### 记分板树
+
 
 ### 递归
 
