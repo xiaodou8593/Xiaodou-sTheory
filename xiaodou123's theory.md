@@ -1310,6 +1310,21 @@ execute if score res int 0 if <conditioni> run scoreboard players set res int 1
 
 该方法的兼容性与<嵌套执行>相同，需要s命名。
 
+与：
+
+```
+scoreboard players set res int 0
+execute if <condition0> if <condition1> if <condition2> ... if <conditioni> run scoreboard players set res int 1
+```
+
+注意：这里没有使用store法获取结果，这是因为store统计最右边的<可返回子命令>，如果condition0不通过，最右边的conditioni其实不会被判断，store也就不会对结果进行赋值。
+
+我们重点关注与逻辑的开销问题。在execute中，熔断机制是存在的。前面的条件不通过，后面的条件就不会进行运算。
+
+这意味着，我们将不同的条件安排在不同的位置，虽然效果同样是实现了与逻辑，但开销是不同的。
+
+现在，我们的任务就是找到让开销最少的条件排列。对于命令`execute if c0 if c1 if c2 ...... if ci`，我们假设条件ci通过的概率是pi，开销是wi（实际情况中失败开销要更大，这是由mc命令的异常处理造成的），且不同条件通过与否相互独立。那么，命令只判断条件c0的概率是1-p0，命令只判断条件c0,c1的概率是p0*(1-p1)，命令只判断条件c0,c1,c2的概率是p0\*p1\*(1-p1)......每种情况乘上对应的概率进行求和，即可求得开销的总期望值。或者，我们换一种方式进行理解：条件c0的开销必然被运行，无论失败或成功；条件c1的开销只能在c0成功后运行；条件c2的开销只能在c0成功并且c1成功后运行......因此总期望为w0+p0\*w1+p0\*p1\*w2+......+p0\*p1\*p2*......*wi
+
 #### 记分板树
 
 ### 递归
