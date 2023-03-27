@@ -3,13 +3,13 @@ import { sidebar } from "vuepress-theme-hope";
 export const zhSidebar = sidebar({
     "/": [
         {
-          text: "Chapter0-前言",
+          text: "前言",
           link: "/README.md",
           collapsible: false,
           children: []
         },
         {
-            text: "Chapter1-命令与函数",
+            text: "一、命令与函数",
             link: "/chatper1-命令与函数/1.一切还要从函数说起.md",
             prefix: "/chatper1-命令与函数",
             collapsible: true,
@@ -76,6 +76,42 @@ export const zhSidebar = sidebar({
                 ]
               }
             ]
+          },
+          {
+            text: "二、常用调试技巧",
+            link: "",
+            collapsible: false,
+            children: []
+          },
+          {
+            text: "三、数值运算基础",
+            link: "",
+            collapsible: false,
+            children: []
+          },
+          {
+            text: "四、数理计算",
+            link: "",
+            collapsible: false,
+            children: []
+          },
+          {
+            text: "五、数据处理基础",
+            link: "",
+            collapsible: false,
+            children: []
+          },
+          {
+            text: "六、数据结构",
+            link: "",
+            collapsible: false,
+            children: []
+          },
+          {
+            text: "七、系统架构设计与优化",
+            link: "",
+            collapsible: false,
+            children: []
           }
       ],
 });
