@@ -6,7 +6,7 @@ export default hopeTheme({
   hostname: "https://github.com/xiaodou8593/Xiaodou-sTheory",
 
   author: {
-    name: "XiaoDou",
+    name: "xiaodou123",
     url: "https://space.bilibili.com/206987540",
   },
 
